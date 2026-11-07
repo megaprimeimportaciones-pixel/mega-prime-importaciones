@@ -1,4 +1,4 @@
-<!doctype html><html lang="es"><head><script src="config.js?v=94.1"></script><script src="connection.js?v=95"></script><script src="client.js?v=94.1"></script><script src="public-bridge.js?v=94.1"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><title>Mega Prime Importaciones | Catálogo digital</title><!-- Tipografía PREMIUM V39: servicio de fuentes opcional, con alternativas locales -->
+<!doctype html><html lang="es"><head><script src="config.js?v=94.1"></script><script src="connection.js?v=95"></script><script src="client.js?v=101"></script><script src="public-bridge.js?v=94.1"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><title>Mega Prime Importaciones | Catálogo digital</title><!-- Tipografía PREMIUM V39: servicio de fuentes opcional, con alternativas locales -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -2096,7 +2096,7 @@ function mpiPrintHeader(){
 }
 function printCalculation(){if(!lastCalc){toast('Primero calcula el material');return}const data=document.getElementById('calcResult').innerHTML;const win=window.open('','_blank');if(!win){toast('Permite ventanas emergentes para imprimir');return}win.document.write('<!doctype html><html lang="es"><meta charset="utf-8"><title>Estimación de materiales</title><style>body{font:16px Arial;line-height:1.8;padding:35px;max-width:700px}h1{color:#986c17}small{color:#555}</style>' + mpiPrintHeader() + '<h2>Estimación de materiales — DEMOSTRACIÓN</h2><p>'+data+'</p><p>Fecha: '+new Date().toLocaleDateString('es-EC')+'</p></html>');win.document.close();win.focus();win.print()}
 /* V42: inicialización diferida hasta cargar calculator_v42.js */
-function openCart(){renderCart();openModal('cartModal')}
+function openCart(){if(window.MP_isVisible&&!MP_isVisible('cart'))return;renderCart();openModal('cartModal')}
 function cartSpecLines(item){const c=item.configuration;if(!c)return [];
  return requestSummary({format:c.format||'',model:c.model||'',thickness:c.thickness||'',width:c.width||'',usefulWidth:c.usefulWidth||'',length:c.length||'',yield:c.yield||'',color:c.color||'Por definir',notes:c.notes||''});}
 function renderCart(){const el=document.getElementById('cartList');el.innerHTML=cart.length?cart.map((p,i)=>`<div class="cart-item"><div><b>${escapeText(p.name)}</b>${p.configuration?`<div class="cart-specs">${cartSpecLines(p).map(escapeText).join('\n')}</div>`:''}<div class="cart-meta">${Number(p.price)>0?money(p.price)+' / '+escapeText(p.unit||'unidad'):'Precio pendiente de cotizar'}</div><label style="display:inline-flex;align-items:center;gap:5px;font-size:12px">Cantidad <input class="cart-qty" type="number" min="${allowsFractionalQty(p.unit)?'0.001':'1'}" max="100000" step="${allowsFractionalQty(p.unit)?'0.001':'1'}" value="${p.qty}" aria-label="Cantidad de ${escapeText(p.name)}" onchange="changeCartQty(${i},this.value)"></label> <small>${escapeText(p.unit||'unidades')}</small></div><div><b>${Number(p.price)>0?money(p.qty*p.price):'Por confirmar'}</b><br><button class="cart-remove" onclick="removeItem(${i})">Eliminar</button></div></div>`).join(''):'<p class="empty">Aún no has agregado productos.</p>';
@@ -2137,6 +2137,7 @@ function buildWhatsAppQuoteText(){
  return lines.join('\n');
 }
 function sendQuoteWhatsApp(){
+ if(window.MP_quoteSend)return MP_quoteSend();
   if(!cart.length){toast('Agrega al menos un producto para enviarlo por WhatsApp.');return}
   const number=MEGA_PRIME_WHATSAPP_VENTAS.replace(/\D/g,'');
   const msg=buildWhatsAppQuoteText();
@@ -2443,7 +2444,7 @@ window.MPI_cleanConfig=function(input){
  if(!input||typeof input!=='object'||![41,43].includes(Number(input.schema)))throw Error('Configuración incompatible (versiones admitidas: 41 y 43)');
  const d=window.MPI_clone(window.MPI_CMS_DEFAULTS);
  for(const [k,v] of Object.entries(input)){
-   if((k in d && (typeof v===typeof d[k] || (Array.isArray(v)&&Array.isArray(d[k])))) || (['company','indicators','supplier','technicalBenefits','location','chatbot','contactSection','updates','videoLibrary'].includes(k)&&v!==null&&typeof v==='object'&&!Array.isArray(v))) d[k]=v;
+   if((k in d && (typeof v===typeof d[k] || (Array.isArray(v)&&Array.isArray(d[k])))) || (['company','indicators','supplier','technicalBenefits','location','chatbot','contactSection','updates','videoLibrary','visibility'].includes(k)&&v!==null&&typeof v==='object'&&!Array.isArray(v))) d[k]=v;
  }
 
  d.catalog={...window.MPI_CMS_DEFAULTS.catalog,...(input.catalog&&typeof input.catalog==='object'?input.catalog:{})};
@@ -2632,7 +2633,7 @@ function applyCore(c){
  document.title=c.seo.title||document.title;let rmeta=$('meta[name="robots"]');if(!rmeta){rmeta=el('meta');rmeta.name='robots';document.head.append(rmeta)}rmeta.content=c.seo.indexable===true?'index,follow':'noindex,nofollow';let meta=$('meta[name="description"]');if(!meta){meta=el('meta');meta.name='description';document.head.append(meta)}meta.content=c.seo.description||'';
  text('.top .wrap span:first-child',c.header.topLeft);text('.top .wrap span:last-child',c.header.topRight);
  const search=$('#searchInput');if(search)search.placeholder=c.header.search;
- const nav=$('.nav .wrap');if(nav){nav.replaceChildren();(c.header.nav||[]).filter(n=>n.action!=='calculator'&&n.target!=='calculadora').forEach(n=>nav.append(navLink(n)))}
+ const nav=$('.nav .wrap');if(nav){nav.replaceChildren();(c.header.nav||[]).filter(n=>n.visible!==false&&n.action!=='calculator'&&n.target!=='calculadora').forEach(n=>nav.append(navLink(n)))}
  const emblem=$('.mpi-brand-emblem'),wordmark=$('#mpiHeaderWordmark');if(emblem&&safeImg(c.branding.logoEmblem))emblem.src=photo(safeImg(c.branding.logoEmblem));if(wordmark&&safeImg(c.branding.logoWordmark))wordmark.src=photo(safeImg(c.branding.logoWordmark));const textBrandChanged=c.branding.name!==root.branding.name||c.branding.tagline!==root.branding.tagline; if(wordmark){let altText=$('.mpi-cms-wordmark-text');if(textBrandChanged&&!safeImg(c.branding.logoWordmark)){if(!altText){altText=el('span','mpi-cms-wordmark-text');wordmark.insertAdjacentElement('afterend',altText)}altText.replaceChildren(el('b','',c.branding.name||''),el('small','',c.branding.tagline||''));wordmark.style.display='none'}else{if(altText)altText.remove();wordmark.style.display=''}}
  if(safeImg(c.branding.browserIcon)){let fav=$('link[rel~="icon"]');if(!fav){fav=el('link');fav.rel='icon';document.head.append(fav)}fav.href=photo(safeImg(c.branding.browserIcon))}
  const kicker=$('.hero-kicker');if(kicker){for(const node of [...kicker.childNodes])if(node.nodeType===Node.TEXT_NODE)node.textContent=' '+c.hero.eyebrow;}
@@ -3985,6 +3986,7 @@ async function loadCatalog(){
  }
 }
 window.openDigitalCatalog=function(){
+ if(window.MP_isVisible&&!MP_isVisible('digitalCatalog'))return;
  previousFocus=document.activeElement;
  overlay.classList.add('open');overlay.setAttribute('aria-hidden','false');
  document.body.classList.add('mpi-digital-locked');
@@ -4182,7 +4184,7 @@ function printQuoteEnhanced(){
  const colors={...defaults,...palette};
  const cssVars=keys.map(k=>`--quote-${k}:${colors[k]}`).join(';');
  const image=document.querySelector('.mpi-header-brand .mpi-brand-emblem');
- const imageSrc=String(image?.getAttribute('src')||'');
+ let imageSrc=String(image?.getAttribute('src')||'');try{if(imageSrc)imageSrc=new URL(imageSrc,location.href).href}catch{imageSrc=''}
  const logo=/^(data:image\/(webp|png|svg\+xml|jpeg);base64,|https?:\/\/|\/)/i.test(imageSrc)?`<img class="brand-icon" alt="" src="${esc(imageSrc)}">`:'';
  const priceRows=cart.map(p=>{
    const qty=numeric(p.qty),price=numeric(p.price),unit=esc(p.unit||'unidad');
@@ -4279,4 +4281,4 @@ if('ResizeObserver' in window)new ResizeObserver(schedule).observe(shell);
 measure();
 })();
 </script>
-<script src="integrations-defaults.js?v=99"></script><link rel="stylesheet" href="public-integrations.css?v=94.1"><link rel="stylesheet" href="interaction-refinements.css?v=94.1"><script src="contact-settings.js?v=94.1"></script><script src="social-settings.js?v=94.1"></script><script src="public-integrations.js?v=97"></script><link rel="stylesheet" href="effects.css?v=94.1"><script src="effects.js?v=94.1"></script><link rel="stylesheet" href="animated-chatbot.css?v=94.2"><script src="animated-chatbot.js?v=94.2"></script><link rel="stylesheet" href="stories.css?v=94.3"><script src="story-playback.js?v=99"></script><script src="stories.js?v=99"></script><link rel="stylesheet" href="workspace-features.css?v=97"><script src="video-library.js?v=97"></script><script src="chat-workspace.js?v=99"></script><script src="story-reactions.js?v=99"></script><script src="story-comments.js?v=98"></script><script src="calculator-access.js?v=100"></script></body></html>
+<script src="integrations-defaults.js?v=101"></script><link rel="stylesheet" href="public-integrations.css?v=94.1"><link rel="stylesheet" href="interaction-refinements.css?v=94.1"><script src="contact-settings.js?v=101"></script><script src="social-settings.js?v=101"></script><script src="public-integrations.js?v=101"></script><link rel="stylesheet" href="effects.css?v=94.1"><script src="effects.js?v=94.1"></script><link rel="stylesheet" href="animated-chatbot.css?v=94.2"><script src="animated-chatbot.js?v=94.2"></script><link rel="stylesheet" href="stories.css?v=94.3"><script src="story-playback.js?v=99"></script><script src="stories.js?v=99"></script><link rel="stylesheet" href="workspace-features.css?v=101"><script src="video-library.js?v=97"></script><script src="chat-workspace.js?v=101"></script><script src="story-reactions.js?v=99"></script><script src="story-comments.js?v=98"></script><script src="calculator-access.js?v=100"></script><script src="vendor/qrcodegen.js"></script><script src="share-qr.js?v=101"></script><script src="visibility-controls.js?v=101"></script><script src="quote-messages.js?v=101"></script></body></html>

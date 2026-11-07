@@ -5,7 +5,7 @@ async function db(path,method='POST',body){const r=await fetch(e.SUPABASE_URL+'/
 async function tick(){const entry=await db('rpc/claim_chat_notification','POST',{});if(!entry)return;const {job,inquiry}=entry;let result;
  try{
   const allowed=await db('notification_targets?user_id=eq.'+job.user_id+'&enabled=eq.true&phone=eq.'+encodeURIComponent(job.phone),'GET');const members=await db('members?id=eq.'+job.user_id+'&active=eq.true','GET');
-  if(!allowed.length||!members.length){await db('chat_notifications?id=eq.'+job.id,'PATCH',{status:'cancelado'});return}
+  if(!allowed.length||!members.length||(members[0].role!=='owner'&&members[0].permissions?.manage_inbox===false)){await db('chat_notifications?id=eq.'+job.id,'PATCH',{status:'cancelado'});return}
   const conversation=(inquiry.transcript||[]).map(x=>(x.role==='user'?'Cliente: ':'Asistente: ')+x.text).join(' | ');
   const text=('Nueva consulta · '+inquiry.name+' · '+inquiry.contact+' · '+inquiry.question+' · '+conversation).replace(/[\r\n\t]+/g,' ').slice(0,1000);
   const r=await fetch('https://graph.facebook.com/'+e.META_GRAPH_VERSION+'/'+e.WHATSAPP_PHONE_ID+'/messages',{method:'POST',headers:{Authorization:'Bearer '+e.WHATSAPP_TOKEN,'Content-Type':'application/json'},body:JSON.stringify({messaging_product:'whatsapp',to:job.phone.slice(1),type:'template',template:{name:e.WHATSAPP_NOTIFY_TEMPLATE,language:{code:e.WHATSAPP_NOTIFY_LANGUAGE||'es'},components:[{type:'body',parameters:[{type:'text',text}]}]}}),signal:AbortSignal.timeout(25000)});

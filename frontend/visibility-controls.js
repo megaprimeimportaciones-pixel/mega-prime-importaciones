@@ -1,0 +1,28 @@
+(()=>{
+ const enabled=(c,key)=>c?.visibility?.[key]!==false;
+ const navAllowed=(n,c)=>n.visible!==false&&!(n.action==='calculator'||n.target==='calculadora')&&!(n.action==='cart'&&!enabled(c,'cart'))&&!(n.action==='digital-catalog'&&!enabled(c,'digitalCatalog'))&&!(n.action==='section'&&c.visibility?.sections?.[n.target]===false)&&!(n.action==='category'&&(c.categories||[]).some(k=>k.name===n.target&&k.visible===false));
+ window.MP_isVisible=key=>new URLSearchParams(location.search).get('tool')==='calculator'||enabled(window.MPI_CMS_ACTIVE||window.MPI_CMS_DEFAULTS,key);
+ window.MP_visibility={enabled,navAllowed};
+ function apply(){const c=window.MPI_CMS_ACTIVE||window.MPI_CMS_DEFAULTS;if(!c||new URLSearchParams(location.search).get('tool')==='calculator')return;document.querySelectorAll('[data-mp-hidden]').forEach(e=>e.removeAttribute('data-mp-hidden'));
+  const hide=selector=>document.querySelectorAll(selector).forEach(e=>e.setAttribute('data-mp-hidden','true'));
+  if(!enabled(c,'search'))hide('.search');
+  if(!enabled(c,'cart')){hide('[onclick*="openCart"],[onclick*="sendQuote"],[onclick*="addToCart"],.cartnav,.detail-action');if(document.getElementById('cartModal')?.classList.contains('open'))window.closeModal?.('cartModal')}
+  if(!enabled(c,'digitalCatalog')){hide('.mpi-digital-nav,[href="#catalogo-digital"]');window.closeDigitalCatalog?.()}
+  if(!enabled(c,'chatbot')||c.chatbot?.visible===false)hide('#mp-assistant-dock,#mp-chat,#mp-chat-toggle,.mp-assistant-dock');
+  for(const [id,on]of Object.entries(c.visibility?.sections||{}))if(on===false)hide('#'+id);
+  const nav=document.querySelector('.nav .wrap');if(nav){const allowed=(c.header?.nav||[]).filter(n=>navAllowed(n,c));for(const a of nav.querySelectorAll('a')){const text=a.textContent.trim();const source=(c.header?.nav||[]).find(n=>n.label===text);if(source&&!navAllowed(source,c))a.setAttribute('data-mp-hidden','true');const id=a.getAttribute('href')?.replace(/^#/,'');if(id&&c.visibility?.sections?.[id]===false)a.setAttribute('data-mp-hidden','true')}}
+  if(c.visibility?.sections?.mision===false&&c.visibility?.sections?.vision===false)hide('#mision-vision');
+ }
+ if(document.readyState==='loading')window.addEventListener('DOMContentLoaded',apply);else apply();window.addEventListener('mpi:cms-updated',apply);window.addEventListener('mpi:products-updated',apply);
+ if(!document.getElementById('contentTab'))return;
+ const box=document.createElement('details');box.open=false;box.dataset.permission='manage_visibility';box.hidden=true;const summary=document.createElement('summary');summary.textContent='👁 Visibilidad de la página';const content=document.createElement('div');box.append(summary,content);document.querySelector('#contentTab .editor').before(box);
+ const sections=[['inicio','Inicio'],['categorias','Explorar categorías'],['catalogo','Catálogo de productos'],['experiencia','Experiencia'],['distribuidores','Distribuidores'],['resenas','Opiniones'],['empresa','Empresa'],['mision','Misión'],['vision','Visión'],['contacto','Contacto'],['ubicacion','Mapa'],['videos','Videos permanentes'],['novedades','Novedades y estados'],['mp-home-stories','Círculo de estados']];
+ function checkbox(label,checked,change){const l=document.createElement('label'),input=document.createElement('input');input.type='checkbox';input.checked=checked;input.onchange=()=>change(input.checked);l.append(input,document.createTextNode(' '+label));content.append(l)}
+ function render(){draft.visibility||={};draft.visibility.sections||={};content.replaceChildren();const help=document.createElement('p');help.textContent='Activado: visible para los visitantes. Desactivado: oculto. Guarda y publica para aplicar los cambios.';content.append(help);
+  for(const [key,label]of [['search','Buscador del encabezado'],['cart','Carrito y cotización'],['digitalCatalog','Catálogo digital'],['chatbot','Chatbot animado']])checkbox(label,key==='chatbot'?enabled(draft,key)&&draft.chatbot?.visible!==false:enabled(draft,key),v=>{draft.visibility[key]=v;if(key==='chatbot')draft.chatbot.visible=v;remember()});
+  for(const [id,label]of sections)checkbox(label,draft.visibility.sections[id]!==false,v=>{draft.visibility.sections[id]=v;remember()});
+  const h=document.createElement('h3');h.textContent='Categorías';content.append(h);for(const category of draft.categories||[])checkbox(category.name,category.visible!==false,v=>{category.visible=v;remember()});
+  const menu=document.createElement('h3');menu.textContent='Enlaces del menú';content.append(menu);for(const item of draft.header?.nav||[]){if(item.action==='calculator')continue;checkbox(item.label,item.visible!==false,v=>{item.visible=v;remember()})}
+ }
+ box.addEventListener('toggle',()=>{if(box.open)render()});box.append(button('Guardar visibilidad y publicar',async()=>{draft=MPI_cleanConfig(draft);revision=await MP.request('/rest/v1/rpc/publish_content',{method:'POST',body:{payload:draft,expected_revision:revision,description:'Visibilidad de la página'}});current=structuredClone(draft);fields();preview();say('Visibilidad publicada. Recarga la página pública para comprobarla.')}));
+})();

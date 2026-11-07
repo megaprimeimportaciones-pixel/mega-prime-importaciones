@@ -1,7 +1,7 @@
 /* Cliente REST: credenciales de sesión en sessionStorage, nunca en el repositorio. */
 window.MP = (()=>{
  const cfg=window.MP_CONFIG, key='mp_session_v1';
- let session=null;try{session=JSON.parse(sessionStorage.getItem(key)||'null')}catch{sessionStorage.removeItem(key)}
+ let closing=false;let session=null;try{session=JSON.parse(sessionStorage.getItem(key)||'null')}catch{sessionStorage.removeItem(key)}
  async function request(path,{method='GET',body,auth=true,headers={}}={}){
   if(!cfg.url||!cfg.anonKey)throw Error('Configura frontend/config.js con URL y clave pública de Supabase.');
   const authorization=auth&&session?{Authorization:'Bearer '+session.access_token}:cfg.anonKey.startsWith('eyJ')?{Authorization:'Bearer '+cfg.anonKey}:{};
@@ -13,11 +13,12 @@ window.MP = (()=>{
   }
   return v;
  }
- function store(s){session=s; s?sessionStorage.setItem(key,JSON.stringify(s)):sessionStorage.removeItem(key)}
- return {request,get session(){return session},store,
-  async login(email,password){const s=await request('/auth/v1/token?grant_type=password',{method:'POST',body:{email:email.trim().toLowerCase(),password},auth:false});store(s);return s},
-  async refresh(){if(!session)return;const s=await request('/auth/v1/token?grant_type=refresh_token',{method:'POST',body:{refresh_token:session.refresh_token},auth:false});store(s)},
-  async logout(){try{await request('/auth/v1/logout?scope=global',{method:'POST'})}finally{store(null);location.reload()}},
+ function store(s){if(closing&&s)return;session=s; s?sessionStorage.setItem(key,JSON.stringify(s)):sessionStorage.removeItem(key)}
+ function endSession(){const previous=session;closing=true;store(null);if(!previous)return Promise.resolve();return fetch(cfg.url+'/auth/v1/logout?scope=local',{method:'POST',keepalive:true,headers:{apikey:cfg.anonKey,Authorization:'Bearer '+previous.access_token}}).then(()=>undefined).catch(()=>undefined)}
+ return {request,endSession,acceptRecovery(s){closing=false;store(s)},get session(){return session},store,
+  async login(email,password){closing=false;const s=await request('/auth/v1/token?grant_type=password',{method:'POST',body:{email:email.trim().toLowerCase(),password},auth:false});store(s);return s},
+  async refresh(){if(!session||closing)return;const previous=session;const s=await request('/auth/v1/token?grant_type=refresh_token',{method:'POST',body:{refresh_token:previous.refresh_token},auth:false});if(session===previous&&!closing)store(s)},
+  async logout(){const pending=endSession();location.reload();await pending},
   async recovery(email){return request('/auth/v1/recover?redirect_to='+encodeURIComponent(cfg.siteUrl+'/panel.html'),{method:'POST',body:{email},auth:false})},
   async table(name,query=''){return request('/rest/v1/'+name+query)},
   async insert(name,body){return request('/rest/v1/'+name,{method:'POST',body,headers:{Prefer:'return=representation'}})},

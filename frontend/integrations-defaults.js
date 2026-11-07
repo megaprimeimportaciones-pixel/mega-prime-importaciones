@@ -18,3 +18,5 @@ Object.assign(window.MPI_CMS_DEFAULTS.chatbot,{bubbleTitle:'',bubbleText:'¿En q
 
 Object.assign(window.MPI_CMS_DEFAULTS.company,{missionTitle:'Misión',visionTitle:'Visión',purposeTitle:'Misión y visión',showPurposeNav:true});
 Object.assign(window.MPI_CMS_DEFAULTS.updates,{showStorySubtitle:false,storySubtitle:''});
+
+window.MPI_CMS_DEFAULTS.visibility={search:true,cart:true,digitalCatalog:true,chatbot:true,sections:{}};

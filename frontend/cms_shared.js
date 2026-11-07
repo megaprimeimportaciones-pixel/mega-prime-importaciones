@@ -27,7 +27,7 @@ window.MPI_cleanConfig=function(input){
  if(!input||typeof input!=='object'||![41,43].includes(Number(input.schema)))throw Error('Configuración incompatible (versiones admitidas: 41 y 43)');
  const d=window.MPI_clone(window.MPI_CMS_DEFAULTS);
  for(const [k,v] of Object.entries(input)){
-   if((k in d && (typeof v===typeof d[k] || (Array.isArray(v)&&Array.isArray(d[k])))) || (['company','indicators','supplier','technicalBenefits','location','chatbot','contactSection','updates','videoLibrary'].includes(k)&&v!==null&&typeof v==='object'&&!Array.isArray(v))) d[k]=v;
+   if((k in d && (typeof v===typeof d[k] || (Array.isArray(v)&&Array.isArray(d[k])))) || (['company','indicators','supplier','technicalBenefits','location','chatbot','contactSection','updates','videoLibrary','visibility'].includes(k)&&v!==null&&typeof v==='object'&&!Array.isArray(v))) d[k]=v;
  }
 
  

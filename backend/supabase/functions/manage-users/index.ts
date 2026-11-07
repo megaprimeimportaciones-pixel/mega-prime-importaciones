@@ -13,11 +13,21 @@ Deno.serve(async req=>{
   const {data:{user},error}=await service.auth.getUser(token);if(error||!user)throw Error('Sesión inválida');
   const {data:role,error:roleError}=await scoped.rpc('staff_role');if(roleError||role!=='owner')throw Error('Solo propietario');
   const b=await req.json();let result:unknown={ok:true};
+  const permissionKeys=['edit_content','upload_media','manage_posts','manage_videos','manage_chatbot','manage_inbox','manage_visibility'];
+  const permissions=(v:any)=>{if(!v||typeof v!=='object'||Array.isArray(v)||Object.entries(v).some(([k,x])=>!permissionKeys.includes(k)||typeof x!=='boolean'))throw Error('Permisos inválidos');return v};
+  const password=(v:any,confirmation:any)=>{if(typeof v!=='string'||v.length<16||v.length>128||v!==confirmation)throw Error('La contraseña debe tener 16 a 128 caracteres y coincidir con su confirmación');return v};
   const check=(r:any)=>{if(r.error)throw r.error;return r.data};
-  if(b.action==='invite'){
+  if(b.action==='create'){
    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(b.email))throw Error('Correo inválido');
+   const name=String(b.display_name||'').trim().slice(0,120),caps=permissions(b.permissions||{});
+   const created=check(await service.auth.admin.createUser({email:b.email.trim(),password:password(b.password,b.password_confirmation),email_confirm:true,user_metadata:{display_name:name}}));
+   const membership=await service.from('members').insert({id:created.user.id,email:b.email.trim(),role:'editor',display_name:name,permissions:caps});
+   if(membership.error){await service.auth.admin.deleteUser(created.user.id);throw Error('No se pudo completar la creación del integrante');}
+  }else if(b.action==='invite'){
+   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(b.email))throw Error('Correo inválido');
+   const caps=permissions(b.permissions||{});
    const d=check(await service.auth.admin.inviteUserByEmail(b.email,{redirectTo:siteBase+'/panel.html'}));
-   check(await service.from('members').insert({id:d.user.id,email:b.email,role:'editor',display_name:String(b.display_name||'').trim().slice(0,120)}));
+   check(await service.from('members').insert({id:d.user.id,email:b.email,role:'editor',display_name:String(b.display_name||'').trim().slice(0,120),permissions:caps}));
   }else if(b.action==='sessions'){
    // Lista de sesiones propia de Auth; se expone mediante RPC exclusivo service_role.
    result=check(await service.rpc('owner_sessions'));
@@ -31,10 +41,14 @@ Deno.serve(async req=>{
    if(target.role==='owner')throw Error('La cuenta propietaria solo se recupera desde el entorno privado');
    if(b.action==='update'){
     const changes:any={};
+    if(b.permissions!==undefined)changes.permissions=permissions(b.permissions);
     if(typeof b.display_name==='string')changes.display_name=b.display_name.trim().slice(0,120);
     if(typeof b.active==='boolean'){changes.active=b.active;changes.revoked_before=new Date().toISOString()}
     if(b.email){check(await service.auth.admin.updateUserById(b.id,{email:b.email}));changes.email=b.email}
     check(await service.from('members').update(changes).eq('id',b.id));
+   }else if(b.action==='set-password'){
+    check(await service.auth.admin.updateUserById(b.id,{password:password(b.password,b.password_confirmation)}));
+    check(await service.from('members').update({revoked_before:new Date().toISOString()}).eq('id',b.id));
    }else if(b.action==='revoke')check(await service.from('members').update({revoked_before:new Date().toISOString()}).eq('id',b.id));
    else if(b.action==='delete')check(await service.auth.admin.deleteUser(b.id));
    else if(b.action==='reset')check(await service.auth.resetPasswordForEmail(target.email,{redirectTo:siteBase+'/panel.html'}));
