@@ -1,0 +1,18 @@
+{
+  "xlsx.full.min.js": {
+    "url": "https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js",
+    "sha256": "cc015130aa8521e7f088f88898eba949ccdcbfb38df0bd129b44b7273c3a6f41"
+  },
+  "fflate.js": {
+    "url": "https://cdn.jsdelivr.net/npm/fflate@0.8.2/esm/browser.js",
+    "sha256": "8cc1f687e0159e977addb6b85e274dbd11e622cf151f4fcb7b85d49622ea43e7"
+  },
+  "pdf.mjs": {
+    "url": "https://cdn.jsdelivr.net/npm/pdfjs-dist@6.5.438/build/pdf.min.mjs",
+    "sha256": "3a88402882cfa3e7e72c2c9b5149f52f0f88baf1c5b62aa11a41abdbc2072440"
+  },
+  "pdf.worker.mjs": {
+    "url": "https://cdn.jsdelivr.net/npm/pdfjs-dist@6.5.438/build/pdf.worker.min.mjs",
+    "sha256": "1e64c8240e54735ec5913b37acd5134747799cb8c6bb3777c70adbc01232d2aa"
+  }
+}

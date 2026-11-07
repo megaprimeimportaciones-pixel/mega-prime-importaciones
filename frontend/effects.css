@@ -1,0 +1,55 @@
+/* Identidad de movimiento: oro, profundidad y transiciones suaves. */
+:root{--mp-ease:cubic-bezier(.22,1,.36,1)}
+html{scroll-behavior:smooth}
+.mp-effects-enabled .mp-effect{transition:opacity var(--mp-motion-duration,.8s) var(--mp-ease),transform var(--mp-motion-duration,.9s) var(--mp-ease),filter var(--mp-motion-duration,.8s) var(--mp-ease);will-change:auto}
+.mp-effects-enabled .mp-effect:not(.mp-is-visible){opacity:0;transform:translateY(26px)}
+.mp-effects-enabled [data-mp-effect=company]:not(.mp-is-visible){transform:translateX(-28px)}
+.mp-effects-enabled [data-mp-effect=supplier]:not(.mp-is-visible){transform:translateX(28px)}
+.mp-effects-enabled [data-mp-effect=technical]:not(.mp-is-visible){transform:translateY(16px) scale(.985)}
+.mp-effects-enabled [data-mp-effect=location]:not(.mp-is-visible){filter:blur(3px);transform:translateY(20px)}
+.mp-effects-enabled [data-mp-effect=footer]:not(.mp-is-visible){transform:translateY(12px)}
+.mp-is-visible .mp-card{animation:mp-card-arrive .65s var(--mp-ease) both}
+.mp-is-visible .mp-card:nth-child(2){animation-delay:.09s}.mp-is-visible .mp-card:nth-child(3){animation-delay:.18s}.mp-is-visible .mp-card:nth-child(4){animation-delay:.27s}
+/* Portada: luz ambiental inmóvil y entrada del mensaje. */
+#inicio{position:relative;isolation:isolate;overflow:hidden}
+#inicio:before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at 12% 15%,#e8b94e0d,transparent 54%)}
+#inicio .hero-copy{animation:mp-hero-in 1s var(--mp-ease) both}
+#heroFeature,.hero-feature{transition:transform .7s var(--mp-ease),box-shadow .7s var(--mp-ease)}
+/* Beneficios: acento que acompaña cada bloque. */
+.benefits>div{position:relative;transition:background .3s,transform .3s}
+.benefits>div:after{content:'';position:absolute;bottom:0;left:15%;right:15%;height:2px;background:linear-gradient(90deg,transparent,#e8b94e,transparent);transform:scaleX(0);transition:transform .45s var(--mp-ease)}
+.benefits>div:hover:after{transform:scaleX(1)}
+/* Categorías: imagen enmarcada; catálogo: elevación. */
+#categories button{transition:transform .4s var(--mp-ease),box-shadow .4s,border-color .4s;overflow:hidden}
+#categories button:hover{transform:translateY(-5px);box-shadow:0 12px 28px #0005;border-color:#e8b94e}
+#categories img{transition:transform .7s var(--mp-ease)}#categories button:hover img{transform:scale(1.055)}
+#products>*,.mp-card{transition:transform .35s var(--mp-ease),box-shadow .35s,border-color .35s}
+#products>*:hover{transform:translateY(-5px);box-shadow:0 15px 35px #0005}
+.mp-card:hover{border-color:#a38745;box-shadow:0 12px 25px #0003}
+/* Calculadora: línea de enfoque, sin parpadeos continuos. */
+.calc-banner{position:relative;overflow:hidden}
+.calc-banner:after{content:'';position:absolute;left:0;bottom:0;width:100%;height:2px;background:linear-gradient(90deg,transparent,#e8b94e,transparent);transform:scaleX(.3);opacity:.35;transition:transform .9s var(--mp-ease),opacity .9s}
+.calc-banner:hover:after,.calc-banner:focus-within:after{transform:scaleX(1);opacity:1}
+/* Empresa y proveedor: fotografía con profundidad. */
+#empresa .mp-photo{box-shadow:16px 16px 0 #e8b94e0d;transition:box-shadow .6s,transform .6s var(--mp-ease)}
+#empresa .mp-photo:hover{transform:translateY(-4px);box-shadow:20px 20px 0 #e8b94e14}
+#proveedor .mp-photo{filter:saturate(.85);transition:filter .7s,transform .7s var(--mp-ease)}
+#proveedor .mp-photo:hover{filter:saturate(1);transform:scale(1.015)}
+#indicadores .mp-card strong{display:block;font-variant-numeric:tabular-nums}
+#indicadores.mp-is-visible progress{animation:mp-meter-in 1.3s var(--mp-ease) both;transform-origin:left}
+#informacion-tecnica.mp-is-visible meter{animation:mp-meter-in 1.3s var(--mp-ease) both;transform-origin:left}
+#informacion-tecnica.mp-is-visible .mp-dimension:nth-of-type(2) meter{animation-delay:.15s}
+/* Ubicación: borde luminoso que aparece al explorarla. */
+#ubicacion .mp-split{position:relative;border:1px solid #334048;border-radius:18px;padding:22px;transition:border-color .5s,box-shadow .5s}
+#ubicacion .mp-split:hover{border-color:#8c743a;box-shadow:0 0 0 5px #e8b94e06}
+#contacto a.mp-card{position:relative;overflow:hidden}
+#contacto a.mp-card:after{content:'↗';position:absolute;right:16px;top:16px;color:#e8b94e;transition:transform .3s}
+#contacto a.mp-card:hover:after{transform:translate(3px,-3px)}
+.social-zone a{transition:transform .3s,box-shadow .3s,border-color .3s}.social-zone a:hover{transform:translateY(-3px);box-shadow:0 7px 16px #0004}
+.corp-footer{position:relative}.corp-footer:before{content:'';display:block;height:1px;background:linear-gradient(90deg,transparent,#e8b94e88,transparent);margin-bottom:20px}
+@keyframes mp-card-arrive{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes mp-hero-in{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes mp-meter-in{from{transform:scaleX(.03)}to{transform:scaleX(1)}}
+@media(hover:none){#categories button:hover,#products>*:hover,#empresa .mp-photo:hover,#proveedor .mp-photo:hover{transform:none}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.mp-effect,.mp-card,#inicio .hero-copy,progress,meter{animation:none!important;transition:none!important;opacity:1!important;transform:none!important;filter:none!important}}
+@media print{.mp-effect,.mp-card{opacity:1!important;transform:none!important;filter:none!important;animation:none!important}}

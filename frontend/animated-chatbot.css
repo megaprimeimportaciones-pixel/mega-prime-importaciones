@@ -1,0 +1,23 @@
+#mp-assistant-dock{--mp-assistant-accent:#e8b94e;position:fixed;right:20px;bottom:92px;z-index:1000;width:218px;display:flex;flex-direction:column;align-items:center;gap:0;pointer-events:none}
+#mp-assistant-dock>*{pointer-events:auto}
+.mp-assistant-greeting{position:relative;width:100%;padding:14px 16px;text-align:left;background:#fffdf6;color:#173646;border:1px solid #e4d3a6;border-radius:18px 18px 3px 18px;box-shadow:0 9px 28px #0002;cursor:pointer;font:13px/1.45 'Segoe UI',Arial,sans-serif}
+.mp-assistant-greeting:after{content:'';position:absolute;right:36px;bottom:-9px;width:16px;height:16px;transform:rotate(45deg);background:#fffdf6;border-right:1px solid #e4d3a6;border-bottom:1px solid #e4d3a6}
+.mp-assistant-greeting strong,.mp-assistant-greeting span,.mp-assistant-greeting small{display:block}.mp-assistant-greeting span{margin-top:5px}.mp-assistant-greeting small{font-size:10px;opacity:.75;margin-top:4px}
+.mp-assistant-greeting{border-top:3px solid var(--mp-assistant-accent)}
+#mp-assistant-dock .mp-avatar-button{position:relative;left:auto;right:auto;bottom:auto;width:138px;height:138px;padding:0;margin:4px 0 0;background:transparent;border:0;border-radius:35%;box-shadow:none;animation:none;color:inherit;cursor:pointer;filter:drop-shadow(0 7px 5px #0002);transition:transform .25s}
+#mp-assistant-dock .mp-avatar-button:hover{transform:translateY(-3px)}.mp-avatar-button svg,.mp-avatar-button img{display:block;width:100%!important;height:100%!important;object-fit:contain;max-height:none}
+.mp-robot-body{animation:mp-robot-float 3.5s ease-in-out infinite;transform-origin:90px 100px}.mp-robot-hand{animation:mp-robot-wave 4.5s ease-in-out infinite;transform-origin:141px 113px}.mp-robot-eyes{animation:mp-robot-blink 6s infinite;transform-origin:90px 77px}
+[data-animation=none] .mp-robot-body,[data-animation=none] .mp-robot-hand,[data-animation=none] .mp-robot-eyes{animation:none}
+.mp-assistant-whatsapp{display:flex;justify-content:center;align-items:center;width:190px;min-height:44px;padding:10px 20px;border-radius:30px;background:#087b46;color:white!important;font:800 15px/1.3 'Segoe UI',Arial,sans-serif;box-shadow:0 7px 20px #0002;text-decoration:none;transition:transform .25s,background .25s}.mp-assistant-whatsapp:hover{background:#096739;transform:translateY(-2px)}
+.mp-assistant-active #whatsappFloat{display:none!important}
+.mp-assistant-active #mpi65BackTop{right:auto;left:20px;bottom:92px}
+.mp-assistant-active #mp-chat{left:auto;right:252px;bottom:92px;width:min(370px,calc(100vw - 40px));max-height:calc(100dvh - 150px);box-shadow:0 20px 70px #0006}
+.mp-chat-close{float:right;font-size:25px!important;line-height:1!important;padding:5px 10px!important;background:transparent!important;color:#e8b94e!important}
+.mp-conversation-open .mp-assistant-greeting{visibility:hidden}
+@keyframes mp-robot-float{50%{transform:translateY(-4px)}}@keyframes mp-robot-wave{0%,25%,100%{transform:rotate(0)}5%,15%{transform:rotate(-8deg)}10%,20%{transform:rotate(5deg)}}@keyframes mp-robot-blink{0%,44%,48%,100%{transform:scaleY(1)}46%{transform:scaleY(.1)}}
+@media(max-width:600px){#mp-assistant-dock{right:12px;bottom:82px;width:150px}.mp-assistant-greeting{font-size:11px;padding:11px;border-radius:14px 14px 3px 14px}.mp-assistant-greeting small{display:none}#mp-assistant-dock .mp-avatar-button{width:94px;height:94px}.mp-assistant-whatsapp{width:144px;min-height:38px;font-size:13px;padding:8px 12px}.mp-assistant-active #mp-chat{right:12px;bottom:82px;width:calc(100vw - 24px);max-height:calc(100dvh - 125px);z-index:1002}.mp-conversation-open .mp-avatar-button,.mp-conversation-open .mp-assistant-whatsapp{visibility:hidden}}
+@media(prefers-reduced-motion:reduce){.mp-robot-body,.mp-robot-hand,.mp-robot-eyes{animation:none!important}.mp-avatar-button,.mp-assistant-whatsapp{transition:none!important}}
+@media print{#mp-assistant-dock,#mp-chat{display:none!important}}
+@media(max-width:600px){.mp-assistant-active #mpi65BackTop{left:12px;bottom:132px}}
+/* En pantallas estrechas, el saludo se consulta al abrir el chat para dejar libre la portada. */
+@media(max-width:600px){#mp-assistant-dock{width:108px}.mp-assistant-greeting{display:none}#mp-assistant-dock .mp-avatar-button{width:66px;height:66px}.mp-assistant-whatsapp{width:108px;min-height:32px;padding:7px 8px;font-size:11px}}

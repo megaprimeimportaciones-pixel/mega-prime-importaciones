@@ -1,0 +1,6 @@
+/* Mantiene el asistente separado del acceso rápido a cotización existente. */
+.mp-chat-toggle{bottom:100px}
+.mp-chat{bottom:168px}
+@media(max-height:650px){.mp-chat{max-height:65vh}}
+.mp-social-embed{width:100%;height:570px;max-width:550px;border:0;border-radius:12px;background:#fff}
+.mp-contact-settings,details:has(#socialRows){padding:18px;margin:20px 0;border:1px solid #52616b;border-radius:10px}
