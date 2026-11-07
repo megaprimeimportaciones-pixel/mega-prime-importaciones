@@ -11,3 +11,7 @@ header{position:sticky;top:0;z-index:110;background:#080d11;align-items:center}#
 [data-mp-hidden=true]{display:none!important}
 
 .mp-quote-contact{margin:14px 0;padding:14px;border:1px solid #52616b;border-radius:10px}.mp-quote-contact label{display:block;margin:10px 0}.mp-quote-contact input:not([type=checkbox]){width:100%;box-sizing:border-box}.mp-quote-contact input[type=checkbox]{width:auto}.mp-quote-contact a{display:inline-block;background:#087c4a;color:white;border-radius:8px;padding:12px;margin-top:8px}
+
+#password:not(.mp-password-manual){color:transparent!important;-webkit-text-fill-color:transparent!important;caret-color:#e8b94e}#password.mp-password-manual{color:#fff!important;-webkit-text-fill-color:#fff!important}
+
+#password:-webkit-autofill{box-shadow:0 0 0 1000px #080d11 inset!important}
