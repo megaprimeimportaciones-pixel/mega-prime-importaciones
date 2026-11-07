@@ -1,0 +1,40 @@
+begin;
+create table public.videos(id uuid primary key default gen_random_uuid(),title text not null check(length(title) between 1 and 199),description text not null default '',url text not null check(url ~ '^https://[^[:space:]]+$'),poster text,source text not null default 'upload' check(source in ('upload','external')),published boolean not null default false,sort_order int not null default 0,created_at timestamptz not null default now());
+alter table public.videos enable row level security;
+create policy videos_read on public.videos for select to anon,authenticated using(published or public.staff_role() is not null);
+create policy videos_manage on public.videos for all to authenticated using(public.staff_role() is not null) with check(public.staff_role() is not null);
+grant select on public.videos to anon;grant select,insert,update,delete on public.videos to authenticated;
+alter table public.inquiries add column transcript jsonb not null default '[]' check(jsonb_typeof(transcript)='array' and octet_length(transcript::text)<40000);
+create table public.inquiry_messages(id uuid primary key default gen_random_uuid(),inquiry_id uuid not null references public.inquiries on delete cascade,actor uuid not null references auth.users,body text not null check(length(body) between 1 and 4000),created_at timestamptz not null default now());
+alter table public.inquiry_messages enable row level security;
+create policy thread_read on public.inquiry_messages for select to authenticated using(public.staff_role() is not null);
+create policy thread_reply on public.inquiry_messages for insert to authenticated with check(public.staff_role() is not null and actor=auth.uid());
+grant select,insert on public.inquiry_messages to authenticated;
+create table public.notification_targets(user_id uuid primary key references public.members on delete cascade,phone text not null check(phone ~ '^\+[1-9][0-9]{7,14}$'),enabled boolean not null default false,consent_at timestamptz not null);
+alter table public.notification_targets enable row level security;
+create policy targets_staff on public.notification_targets for all to authenticated using(public.staff_role() is not null and (user_id=auth.uid() or public.staff_role()='owner')) with check(public.staff_role() is not null and (user_id=auth.uid() or public.staff_role()='owner'));
+grant select,insert,update,delete on public.notification_targets to authenticated;
+create table public.chat_notifications(id uuid primary key default gen_random_uuid(),inquiry_id uuid not null references public.inquiries on delete cascade,user_id uuid not null references public.members on delete cascade,phone text not null,status text not null default 'pendiente' check(status in ('pendiente','procesando','enviado','fallido','incierto','cancelado')),provider_id text,error text,claimed_at timestamptz,created_at timestamptz not null default now(),unique(inquiry_id,user_id));
+alter table public.chat_notifications enable row level security;
+create policy notifications_read on public.chat_notifications for select to authenticated using(public.staff_role() is not null and (user_id=auth.uid() or public.staff_role()='owner'));
+grant select on public.chat_notifications to authenticated;
+create function public.queue_chat_notifications() returns trigger language plpgsql security definer set search_path=public as $$begin
+ insert into chat_notifications(inquiry_id,user_id,phone) select NEW.id,t.user_id,t.phone from notification_targets t join members m on m.id=t.user_id where t.enabled and m.active on conflict do nothing;
+ return NEW;
+end $$;
+create trigger new_chat_inquiry after insert on public.inquiries for each row execute function public.queue_chat_notifications();
+create function public.claim_chat_notification() returns jsonb language plpgsql security definer set search_path=public as $$
+declare item chat_notifications; inquiry inquiries;
+begin
+ update chat_notifications set status='incierto',error='Respuesta no confirmada; comprobar antes de reenviar' where status='procesando' and claimed_at<now()-interval '5 minutes';
+ update chat_notifications n set status='cancelado' where n.status='pendiente' and not exists(select 1 from members m join notification_targets t on t.user_id=m.id where m.id=n.user_id and m.active and t.enabled and t.phone=n.phone);
+ select * into item from chat_notifications where status='pendiente' order by created_at for update skip locked limit 1;
+ if item.id is null then return null; end if;
+ update chat_notifications set status='procesando',claimed_at=now() where id=item.id;
+ select * into inquiry from inquiries where id=item.inquiry_id;
+ return jsonb_build_object('job',to_jsonb(item),'inquiry',to_jsonb(inquiry));
+end $$;
+revoke all on function public.claim_chat_notification() from public,anon,authenticated;
+grant execute on function public.claim_chat_notification() to service_role;
+grant all on public.videos,public.inquiry_messages,public.notification_targets,public.chat_notifications to service_role;
+commit;

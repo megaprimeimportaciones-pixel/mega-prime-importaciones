@@ -1,0 +1,18 @@
+# Activar Mega Prime Importaciones en Supabase
+
+La URL y la clave pública ya están configuradas en frontend/config.js. Se comprobó que Supabase Auth responde con estado 200. Esto confirma la conexión, no la existencia de la cuenta administradora ni de las tablas.
+
+1. En el proyecto nuevo, abrir SQL Editor, New query. Copiar TODO INSTALACION_SUPABASE.sql y pulsar Run una sola vez. Incluye las nueve migraciones, roles, Storage, videoteca y mensajería. Si falla, revisar el error antes de repetir.
+2. Ir a Authentication, Users, Add user, Create new user. Usar megaprimeimportaciones@gmail.com y la contraseña temporal del Word privado. Crear esa cuenta desde el panel administrativo y confirmar el correo con la opción administrativa si aparece. No introducir la contraseña en un SQL compartido ni publicarla en GitHub.
+3. Ejecutar ACTIVAR_ADMIN.sql en una consulta nueva. Asigna el rol propietario exclusivamente al correo indicado. No funciona hasta que exista el usuario de Auth.
+4. En la configuración de Auth, desactivar el registro público. En URL Configuration configurar temporalmente el origen local http://127.0.0.1:8765 y permitir la redirección a http://127.0.0.1:8765/panel.html. Cambiar esas direcciones al dominio HTTPS real cuando se publique la web. Exigir contraseña mínima de 16 caracteres y configurar SMTP para recuperación e invitaciones.
+5. Recargar panel.html e ingresar con el correo y la contraseña del Word. Abrir Contenido y pulsar Guardar y publicar para crear el contenido inicial compartido. No usar el servidor de pruebas panel-qa-server.py para una cuenta real.
+6. Probar guardar un texto y subir un video. La videoteca usa su propia tabla y controles, separados de los estados. Editores y propietario pueden gestionarla. La biblioteca pública aparece debajo del catálogo.
+7. Desplegar las Edge Functions manage-users, inquiry y recovery siguiendo README.md. Configurar SITE_URL en el servidor, Turnstile y sus claves, y Resend si se utilizará recuperación alternativa. Sin estas funciones todavía no funcionarán las invitaciones administrativas ni el formulario compartido de consultas; el acceso por contraseña y los contenidos usan directamente Supabase.
+8. Para avisos automáticos de consultas a WhatsApp, configurar un servidor Node con backend/chat-notifications.mjs, token y número de WhatsApp Business oficiales, versión de Graph API y WHATSAPP_NOTIFY_TEMPLATE aprobada con un parámetro de texto. Cada integrante activa su número y consentimiento en Mensajes del chatbot. La cola evita reenvíos automáticos ante respuestas inciertas. El enlace de conversación a WhatsApp solo abre un mensaje para que el visitante lo revise y envíe.
+9. Publicar solo frontend/ en el hosting y configurar su dominio. Supabase no convierte automáticamente index.html en una dirección pública de tu empresa. Actualizar siteUrl, redirecciones de Auth, SITE_URL de las funciones y antispam. allowInitialPreview se limita al desarrollo local; se debe desactivar al completar el despliegue.
+10. Mantener fuera de GitHub el Word, claves secretas, datos y backups. La clave publishable del frontend es pública; los permisos dependen de Auth y RLS.
+
+En el panel hay botones dedicados para Videos permanentes, Mensajes del chatbot y Editar chatbot. La misión y la visión tienen un editor directo dentro de Contenido. Las redes sociales aparecen únicamente al guardar un enlace HTTPS y publicarlo; un enlace vacío oculta tanto el icono como, si no hay ninguno, la sección completa.
+
+Referencias: https://supabase.com/docs/guides/getting-started/api-keys y https://supabase.com/docs/guides/database/postgres/row-level-security.
