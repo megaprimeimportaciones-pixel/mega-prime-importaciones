@@ -15,3 +15,6 @@ Object.assign(window.MPI_CMS_DEFAULTS,{
  chatbot:{visible:true,name:'Prime',greeting:'¡Hola! Soy Prime. Puedo ayudarte con preguntas frecuentes sobre el catálogo.',color:'#e8b94e',image:'',animation:'bounce',fallback:'Puedo derivar tu consulta al equipo. Completa el formulario y autoriza el contacto.',faq:[{question:'¿Cómo puedo cotizar?',answer:'Añade productos a tu cotización y consulta con el equipo para confirmar medidas, precio y disponibilidad.'},{question:'¿Dónde están ubicados?',answer:'La ubicación oficial se mostrará en la sección Encuéntranos cuando el administrador la confirme.'}]}
 });
 Object.assign(window.MPI_CMS_DEFAULTS.chatbot,{bubbleTitle:'',bubbleText:'¿En qué puedo ayudarte?',bubbleHint:'Haz clic para conversar conmigo.',whatsappLabel:'WhatsApp ↗'});
+
+Object.assign(window.MPI_CMS_DEFAULTS.company,{missionTitle:'Misión',visionTitle:'Visión',purposeTitle:'Misión y visión',showPurposeNav:true});
+Object.assign(window.MPI_CMS_DEFAULTS.updates,{showStorySubtitle:false,storySubtitle:''});

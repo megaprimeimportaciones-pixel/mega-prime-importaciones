@@ -1,0 +1,10 @@
+(()=>{
+ const choices=[['heart','❤️'],['like','👍'],['clap','👏']];
+ window.MP_storyReactions=async(host,id)=>{
+  const row=document.createElement('div'),notice=document.createElement('small');row.className='mp-reactions';notice.setAttribute('role','status');notice.setAttribute('aria-live','polite');row.setAttribute('aria-label','Reacciones al estado');host.append(row,notice);
+  let visitor,selected=null;try{visitor=localStorage.getItem('mp_story_visitor');if(!/^[0-9a-f]{8}-[0-9a-f-]{27}$/i.test(visitor||'')){visitor=crypto.randomUUID();localStorage.setItem('mp_story_visitor',visitor)}selected=localStorage.getItem('mp_reaction_'+id)}catch{notice.textContent='Activa el almacenamiento del navegador para reaccionar.';return}
+  let counts={};const buttons=[];const draw=()=>buttons.forEach(({button,key,emoji})=>{button.textContent=emoji+' '+(counts[key]||0);button.setAttribute('aria-pressed',String(selected===key));button.setAttribute('aria-label',(key==='heart'?'Me encanta':key==='like'?'Me gusta':'Aplausos')+': '+(counts[key]||0))});
+  for(const [key,emoji]of choices){const button=document.createElement('button');button.type='button';button.disabled=true;row.append(button);buttons.push({button,key,emoji});button.onclick=async()=>{buttons.forEach(b=>b.button.disabled=true);try{const next=selected===key?null:key;counts=await MP.request('/rest/v1/rpc/react_to_story',{method:'POST',body:{story:id,visitor_key:visitor,choice:next},auth:false});selected=next;try{next?localStorage.setItem('mp_reaction_'+id,next):localStorage.removeItem('mp_reaction_'+id)}catch{}draw();notice.textContent=next?'¡Gracias por tu reacción!':'Reacción retirada.'}catch{notice.textContent='No se pudo guardar la reacción. Inténtalo nuevamente.'}finally{buttons.forEach(b=>b.button.disabled=false)}}}
+  draw();try{counts=await MP.request('/rest/v1/rpc/story_reaction_counts',{method:'POST',body:{story:id},auth:false});draw();buttons.forEach(b=>b.button.disabled=false)}catch{notice.textContent='Las reacciones están temporalmente deshabilitadas. Vuelve a intentarlo más tarde.'}
+ };
+})();

@@ -17,7 +17,7 @@ Deno.serve(async req=>{
   if(b.action==='invite'){
    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(b.email))throw Error('Correo inválido');
    const d=check(await service.auth.admin.inviteUserByEmail(b.email,{redirectTo:siteBase+'/panel.html'}));
-   check(await service.from('members').insert({id:d.user.id,email:b.email,role:'editor'}));
+   check(await service.from('members').insert({id:d.user.id,email:b.email,role:'editor',display_name:String(b.display_name||'').trim().slice(0,120)}));
   }else if(b.action==='sessions'){
    // Lista de sesiones propia de Auth; se expone mediante RPC exclusivo service_role.
    result=check(await service.rpc('owner_sessions'));
@@ -31,6 +31,7 @@ Deno.serve(async req=>{
    if(target.role==='owner')throw Error('La cuenta propietaria solo se recupera desde el entorno privado');
    if(b.action==='update'){
     const changes:any={};
+    if(typeof b.display_name==='string')changes.display_name=b.display_name.trim().slice(0,120);
     if(typeof b.active==='boolean'){changes.active=b.active;changes.revoked_before=new Date().toISOString()}
     if(b.email){check(await service.auth.admin.updateUserById(b.id,{email:b.email}));changes.email=b.email}
     check(await service.from('members').update(changes).eq('id',b.id));

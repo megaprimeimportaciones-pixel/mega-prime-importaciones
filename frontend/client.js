@@ -24,6 +24,6 @@ window.MP = (()=>{
   async update(name,id,body){return request('/rest/v1/'+name+'?id=eq.'+encodeURIComponent(id),{method:'PATCH',body})},
   async remove(name,id){return request('/rest/v1/'+name+'?id=eq.'+encodeURIComponent(id),{method:'DELETE'})},
   async manage(body){return request('/functions/v1/manage-users',{method:'POST',body})},
-  async upload(file){if(!['image/jpeg','image/png','image/webp','video/mp4','video/webm'].includes(file.type)||file.size>52428800)throw Error('Admite JPG, PNG, WEBP, MP4, WEBM hasta 50 MB.');const path=session.user.id+'/'+crypto.randomUUID()+'.'+({'image/jpeg':'jpg','image/png':'png','image/webp':'webp','video/mp4':'mp4','video/webm':'webm'}[file.type]);await request('/storage/v1/object/media/'+path,{method:'POST',body:file,headers:{'Content-Type':file.type}});return cfg.url+'/storage/v1/object/public/media/'+path}
+  async upload(file){if(!['image/jpeg','image/png','image/webp','video/mp4','video/webm','audio/mpeg','audio/mp4','audio/ogg','audio/wav'].includes(file.type)||file.size>52428800)throw Error('Admite JPG, PNG, WEBP, MP4, WEBM o audio MP3, M4A, OGG, WAV hasta 50 MB.');const path=session.user.id+'/'+crypto.randomUUID()+'.'+({'image/jpeg':'jpg','image/png':'png','image/webp':'webp','video/mp4':'mp4','video/webm':'webm','audio/mpeg':'mp3','audio/mp4':'m4a','audio/ogg':'ogg','audio/wav':'wav'}[file.type]);await request('/storage/v1/object/media/'+path,{method:'POST',body:file,headers:{'Content-Type':file.type}});return cfg.url+'/storage/v1/object/public/media/'+path}
  };
 })();
