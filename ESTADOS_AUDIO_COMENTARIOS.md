@@ -21,3 +21,17 @@ Misión y Visión aparecen en el menú y enlazan a sus tarjetas. Sus títulos y 
 
 ## Paquete acumulado
 Se incluyen los formularios y la edición de contenido del paquete anterior, además de todas las funciones nuevas de estados. La descripción de la videoteca puede quedar vacía. Solo se publica la carpeta frontend; backend se conserva como código para desplegar en Supabase. Los cambios de nombre e invitaciones siguen necesitando desplegar manage-users, y el chatbot/WhatsApp conserva las conexiones externas pendientes. No se modificaron contraseñas ni el Word privado.
+
+## Calculadora dentro del administrador
+La calculadora ya no aparece en la navegación pública, la portada, el bloque de cálculo ni los botones de productos. Se abre desde Calculadora interna dentro del panel, para propietario y editores con sesión activa. La vista interna comprueba Auth y staff_role y revisa el permiso periódicamente. El código de cálculo sigue siendo JavaScript del cliente; esta separación controla su acceso en la interfaz y no convierte los archivos estáticos en código secreto.
+
+El bloque de conexión solo aparece cuando falta configurar el proyecto. Ya no pide reinstalar la base en un proyecto conectado. No cambies la API key ni crees de nuevo tu usuario para aplicar esta actualización. No se cambian contraseñas.
+
+Pasos completos
+1. Extraer ACTUALIZACION_ADMIN_CALCULADORA_ESTADOS.zip.
+2. En GitHub Add file, Upload files: arrastrar las cinco entradas de la carpeta extraída conservando frontend, backend y migraciones. No subir la carpeta exterior. Título: Actualizar estados y dejar calculadora dentro del administrador. Confirmar Commit changes y esperar Actions en verde.
+3. Abrir ACTUALIZAR_ESTADOS_COMPLETOS.sql con un editor de texto, seleccionar todo y copiar. En Supabase SQL Editor, New query, pegar y pulsar Run. Este archivo es incremental y tolera volver a ejecutarse; no borra estados ni usuarios. No usar INSTALACION_SUPABASE.sql.
+4. Comprobar Success. No rows returned. Si hay error, conservarlo y no cambiar permisos indiscriminadamente.
+5. Recargar la web y el panel con Ctrl+F5. Entrar con la cuenta existente y abrir Calculadora interna. La calculadora no requiere otra migración.
+6. Probar un estado con texto, duración y archivo. Las reacciones requieren las funciones del archivo incremental, no solo subir JavaScript a GitHub.
+7. Las invitaciones y cambios de nombres/correos requieren desplegar manage-users en Supabase; el chatbot y WhatsApp conservan sus conexiones externas descritas en los paquetes anteriores. No se activan por subir backend a GitHub.

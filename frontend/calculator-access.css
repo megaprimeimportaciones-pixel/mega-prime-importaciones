@@ -1,0 +1,6 @@
+#calcModal,#calculadora,[onclick*="openCalculator"],.detail-calc-link{display:none!important}
+html.mp-private-calculator body>:not(#calcModal):not(#mp-tool-status):not(script):not(style){display:none!important}
+html.mp-private-calculator.mp-tool-authorized #calcModal.open{display:flex!important;inset:0;padding:8px;z-index:200}
+html.mp-private-calculator #calcModal .mpi42-dialog{max-height:98vh;width:100%;max-width:none}
+#mp-tool-status{padding:28px;font:16px/1.6 system-ui;color:#f6f6f2;background:#111a20}
+#mp-tool-status a{color:#e8b94e}
