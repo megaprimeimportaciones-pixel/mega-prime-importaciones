@@ -1,6 +1,7 @@
 import { createClient } from 'npm:@supabase/supabase-js@2.49.8';
 const url=Deno.env.get('SUPABASE_URL')!, secret=Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 const origin=Deno.env.get('SITE_URL')!;
+const siteBase=(Deno.env.get('SITE_BASE_URL')||origin).replace(/\/$/,'');
 const service=createClient(url,secret,{auth:{persistSession:false}});
 Deno.serve(async req=>{
  const headers={'Access-Control-Allow-Origin':origin,'Access-Control-Allow-Headers':'authorization,apikey,content-type','Access-Control-Allow-Methods':'POST,OPTIONS','Content-Type':'application/json','Cache-Control':'no-store'};
@@ -15,7 +16,7 @@ Deno.serve(async req=>{
   const check=(r:any)=>{if(r.error)throw r.error;return r.data};
   if(b.action==='invite'){
    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(b.email))throw Error('Correo inválido');
-   const d=check(await service.auth.admin.inviteUserByEmail(b.email,{redirectTo:origin+'/panel.html'}));
+   const d=check(await service.auth.admin.inviteUserByEmail(b.email,{redirectTo:siteBase+'/panel.html'}));
    check(await service.from('members').insert({id:d.user.id,email:b.email,role:'editor'}));
   }else if(b.action==='sessions'){
    // Lista de sesiones propia de Auth; se expone mediante RPC exclusivo service_role.
@@ -35,7 +36,7 @@ Deno.serve(async req=>{
     check(await service.from('members').update(changes).eq('id',b.id));
    }else if(b.action==='revoke')check(await service.from('members').update({revoked_before:new Date().toISOString()}).eq('id',b.id));
    else if(b.action==='delete')check(await service.auth.admin.deleteUser(b.id));
-   else if(b.action==='reset')check(await service.auth.resetPasswordForEmail(target.email,{redirectTo:origin+'/panel.html'}));
+   else if(b.action==='reset')check(await service.auth.resetPasswordForEmail(target.email,{redirectTo:siteBase+'/panel.html'}));
    else throw Error('Operación inválida');
   }
   return new Response(JSON.stringify(result),{headers});

@@ -6,7 +6,7 @@
  $('connectionURL').value=MP_CONFIG.previewOnly?'':MP_CONFIG.url;$('connectionKey').value=MP_CONFIG.previewOnly?'':MP_CONFIG.anonKey;
  const read=()=>MP_validateConnection($('connectionURL').value,$('connectionKey').value);
  $('saveConnection').onclick=run(()=>{localStorage.setItem('mp_public_connection',JSON.stringify(read()));MP.store(null);location.reload()});
- $('exportConnection').onclick=run(()=>{const c=read();download('config.js','window.MP_CONFIG = '+JSON.stringify({...MP_CONFIG,...c,previewOnly:false,siteUrl:location.origin},null,2)+';\n','application/javascript')});
+ $('exportConnection').onclick=run(()=>{const c=read();download('config.js','window.MP_CONFIG = '+JSON.stringify({...MP_CONFIG,...c,previewOnly:false,siteUrl:new URL('.',location.href).href.replace(/\/$/,'')},null,2)+';\n','application/javascript')});
  if(MP_CONFIG.previewOnly){for(const b of $('loginForm').querySelectorAll('button'))b.disabled=true;$('password').disabled=true;say('Primero conecta Supabase. La contraseña no se ha enviado ni comprobado en una cuenta real.')}
  window.addEventListener('mp:draft-changed',()=>{info.hidden=!$('workspace').hidden});
 })();

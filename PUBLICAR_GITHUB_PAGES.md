@@ -1,0 +1,14 @@
+# GitHub Pages y Supabase
+
+La configuración publica únicamente frontend mediante GitHub Actions. No publica el backend como archivos web. Supabase mantiene autenticación, tablas y Storage. Las funciones de servidor se despliegan por separado en Supabase.
+
+1. GitHub Free permite Pages en repositorios públicos. En privado requiere un plan compatible. Hacer público un repositorio expone su código y su historial: revisar secretos antes de cambiar visibilidad. Nunca subir el Word, .env real ni copias privadas. El archivo .env.example es una plantilla sin secretos.
+2. Sube .github/workflows/pages.yml conservando exactamente esa ruta, además de los cambios de frontend/config.js, frontend/connection-panel.js y las funciones incluidas. El ZIP de actualización contiene las rutas correctas.
+3. En Settings > Pages > Build and deployment > Source elige GitHub Actions. No elijas main/root, porque el sitio está dentro de frontend.
+4. En Actions abre Publicar página de Mega Prime Importaciones > Run workflow > main > Run workflow. Espera el resultado correcto. El enlace definitivo aparece en Settings > Pages; no se considera publicado hasta ese momento.
+5. En este repositorio el enlace esperado es https://megaprimeimportaciones-pixel.github.io/mega-prime-importaciones/ y el acceso esperado es https://megaprimeimportaciones-pixel.github.io/mega-prime-importaciones/panel.html?entry=owner. Son direcciones previstas, aún no verificadas.
+6. En Supabase > Authentication > URL Configuration configura Site URL con la dirección pública anterior y añade a Redirect URLs https://megaprimeimportaciones-pixel.github.io/mega-prime-importaciones/panel.html . El frontend detecta automáticamente su base, incluida la subcarpeta del repositorio.
+7. Para las Edge Functions, SITE_URL=https://megaprimeimportaciones-pixel.github.io (solo origen para CORS) y SITE_BASE_URL=https://megaprimeimportaciones-pixel.github.io/mega-prime-importaciones (para enlaces de invitación y recuperación). Despliega de nuevo manage-users y recovery si ya estaban desplegadas. Configura Turnstile para el hostname megaprimeimportaciones-pixel.github.io y las funciones como indica README.md.
+8. Prueba ingreso, contenido, videos y consultas. No vuelvas a ejecutar la instalación SQL en la base ya instalada. Si actualizas código frontend en main, el workflow volverá a publicarlo. Los contenidos editados en el panel se guardan directamente en Supabase y no requieren commit.
+
+GitHub Pages restringe el alojamiento de negocios en línea y sitios dirigidos principalmente a facilitar transacciones comerciales. La configuración técnica no sustituye revisar que el uso cumpla sus condiciones: https://docs.github.com/en/site-policy/github-terms/github-terms-for-additional-products-and-features . Disponibilidad de planes: https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages .

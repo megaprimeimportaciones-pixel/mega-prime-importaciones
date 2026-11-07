@@ -1,8 +1,9 @@
 {
   "version": "94.1",
-  "generated_at": "2026-11-07T05:40:11.964051+00:00",
+  "generated_at": "2026-11-07T06:09:46.144589+00:00",
   "files": {
     ".gitattributes": "dc5261fd5783c2eb7a26e29ccccc7e620139d176d61212a06412f0fdae663b37",
+    ".github/workflows/pages.yml": "a6f08ffe87da0ccc1d5cdceef54a220a775d9140615c96d3b3ea96357c9292b9",
     ".gitignore": "a55dcb5a3b37e0fdd9a96d437ff78dcc2613aed62165f01627b09a3d1dfcddba",
     "ACTIVAR_ADMIN.sql": "8964d7bcde9ce337a0d38321091aa8b69bdf509a745d73a99aeb79242402bf92",
     "ACTUALIZAR_GITHUB.md": "982f2142bb7ca1b0322ca9bcac068585c9fb834596faa29b2758c26bbeda1866",
@@ -10,8 +11,8 @@
     "backend/message-worker.mjs": "7ea3de6da5aa2e8aa92a694f51d7081bee9cd26401ceb35fc7b70e2c00be6adf",
     "backend/social-sync.mjs": "1c6260cc651a25604ffe4bc31c7918c622deceda9c7cc26d4430cbcaa54968fe",
     "backend/supabase/functions/inquiry/index.ts": "cec6144a771f7e8c60e66ad26807e66f91e43410005f4111a5799e892c5bc195",
-    "backend/supabase/functions/manage-users/index.ts": "efe16518faced551d1157f23068bc6a674b195412f0bc1a8693431adc7cfb4d7",
-    "backend/supabase/functions/recovery/index.ts": "6ffd2d00b4290eb4d57b9041f00971a9cba6d03df6465e7da6497c4f1d660a96",
+    "backend/supabase/functions/manage-users/index.ts": "0f35b93e3281b0ddb51452ca895706e086c62c5e6d94dc2c5d78448f5dcbfa25",
+    "backend/supabase/functions/recovery/index.ts": "a52df70285de91ec56b9ad91ab0c802862de573922f6478f43c91419963d1d5c",
     "FOTOGRAFIA_Y_PUBLICACION.md": "d03aa2afe20aac7e8c07f68faaf4698bcb7c9381fdd163a5d0ed43186e782992",
     "frontend/.htaccess": "1afdf6eeb42b5eaec73e074667c1e332363213804d1482454d6887b7973739bb",
     "frontend/_headers": "16fce8148bf667d8befde781bad5b7ab1d7bdc835ff41a4559f9528e6c69bf27",
@@ -28,8 +29,8 @@
     "frontend/chat-workspace.js": "4a1f25507397b86bbd5aa4a575d47a1121c80e2463ec41f7aa15cfa2aca15315",
     "frontend/client.js": "3f8a74f58e9dd8512e0afb01b8ac9851482abe5700a7d20fbf62e45628035b3a",
     "frontend/cms_shared.js": "8fa76f0a2f3ec1e215be2ca965e592cf6a0212c16005bb66e2925f9970ecc6cb",
-    "frontend/config.js": "a404d139a1e7abf71546990e7f10d478f7e2aef8fe141f11e52eae07586f4fe5",
-    "frontend/connection-panel.js": "13fa56b3fd8d2e5656e053e7a227eb069a5dd18b4247047f219995a639630107",
+    "frontend/config.js": "61989692471a0904936b6b242c3a69666da0cdb2851e9cc521b2108dac55fed7",
+    "frontend/connection-panel.js": "b0f9c65fce27b8811d38a106e8db73a198f64f0c36fb8ca4816dfb1e83643118",
     "frontend/connection.js": "b5a47964a86633a4d8f4543bb34d6e70b00b83e9b98d592e272ce65fcf8a9e77",
     "frontend/contact-import.js": "dbdec122c6098faa44b7e870c9111e20398ae5bf99ea89b0597748ea476e4d24",
     "frontend/contact-settings.js": "f661f7d1b7193db79c536ba14053481bbac553e6ad73ad3cc87f3e0add4041a3",
@@ -120,6 +121,7 @@
     "migraciones/008_social_posts.sql": "fa4f48f5b4d76dcf5aa154c16e153612fbf1450b34179b5a0a238de758a466b1",
     "migraciones/009_videos_and_chat.sql": "ac6f29ba38e8c9ea37efd4bb9e8d8dc65b38b26eccc0be20c577e051425a5991",
     "PASO_A_PASO_SUPABASE.md": "fc65cb9719771dbcdb551c2a15bd93df58983ce171fb74448195cbce52980e1d",
+    "PUBLICAR_GITHUB_PAGES.md": "6c3e0d7446384b3d903398cacbdf1914bee5c9cee2aefa04125293f35ca77887",
     "README.md": "f2567d9cd697d2db09ad3a6bdabb5652e83a6f758530bfafbec3a1135b88fa36",
     "REDES_Y_ESTADOS.md": "0332d720a367a0dfef14c3cead47905e81d234041f2430cc1ddbe324fa78930a",
     "scripts/backup.mjs": "e182e689089287317a5638a23f7110152c944a1242832090c98fa21527c6de34",
@@ -128,7 +130,7 @@
     "scripts/finalize.py": "b77a9f060b983d4661921ca33b1ca91cb0a43e863c231eea50efcc7cce0460b3",
     "scripts/owner.mjs": "f5ed3406125335703e095e042e9cf2575cdd2e72daab99906eb9057046cfbc66",
     "scripts/package.mjs": "dc6e85ab6acd788f684c14dcac06b5a6d7660e7ab9942b84d4b9a711c69d58a1",
-    "scripts/package.py": "dae13ecc724caeabb9c7c6d887d4cc62e0bbf80e44d07a63f14d67bf3be4e60d",
+    "scripts/package.py": "82d4a253925f8583ad10015e82428f77ce6ec00887e0294b6e01dd0f9f5b3304",
     "scripts/polish-home.py": "40e9c4276e0d7aa215d46d1f00f1a44a0c0245db20404702ee178499304374f6",
     "scripts/seo.mjs": "f2635142b41a9d446116a31f0fe269b8d2e03d3e3b99ebf700bc7a07dd5c0c6c",
     "scripts/upgrade-workspace.py": "ddad5218af855e592c8cab7ec3cf9100128be8e00131b57bc81176189a72f4a8",
@@ -139,6 +141,6 @@
     "tests/permissions.mjs": "074219b1648de7a79a6d19a321a9a279781e450b7def51d7fc3ed6ccb9a3c431",
     "tests/preview-server.py": "208bb0594277254794be63a5d2abb73b62ed82be2769072625fefbc8e947ae04",
     "tests/VALIDACION.md": "e8b76b07dff3bbe561e97aa3b85f12219b9ada19fc37a86ab70a42ac56cc6a40",
-    "backend/.env.example": "f32a28b9ac00ab0f8df8b14d51fad1f027060bbec3312f21bf1929ff867b9ea2"
+    "backend/.env.example": "19cec5e31b92b213c100f5f25986151c059183bfd529bcf27bdcaa12c518efd0"
   }
 }

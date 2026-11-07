@@ -2,7 +2,7 @@
 window.MP_CONFIG = {
  url: 'https://cwjzokilpccpaziaoktv.supabase.co',
  anonKey: 'sb_publishable_m5122-JO0Ni_rJK5A3UjRQ_rp_Ix9Kp',
- siteUrl: 'http://127.0.0.1:8765',
+ siteUrl: new URL('.', window.location.href).href.replace(/\/$/, ''),
  turnstileSiteKey: '',
  allowInitialPreview: true
 };
