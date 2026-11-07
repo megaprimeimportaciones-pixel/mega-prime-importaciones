@@ -14,7 +14,7 @@
  pass.addEventListener('input',e=>{if(allow.checked){appearance();return}if(e.isTrusted&&pendingInput){accepted=pass.value;manual=accepted.length>0}pendingInput=false;enforce()});
  pass.addEventListener('change',enforce);pass.addEventListener('blur',()=>{pendingInput=false;enforce()});
  allow.onchange=()=>{if(allow.checked){pass.readOnly=false;pass.autocomplete='current-password';pass.removeAttribute('data-lpignore');pass.removeAttribute('data-1p-ignore');document.getElementById('email').autocomplete='username';appearance()}else{reset();document.getElementById('email').autocomplete='off'}};
- form.addEventListener('submit',e=>{if(!allow.checked&&(!manual||!accepted||pass.value!==accepted)){e.preventDefault();e.stopImmediatePropagation();reset();document.getElementById('message').textContent='Escribe tu contraseña para esta sesión. No se aceptó una contraseña rellenada automáticamente.';pass.focus();return}queueMicrotask(reset)},true);
- reset();setInterval(enforce,100);window.addEventListener('pageshow',reset);window.addEventListener('mp:session-locked',reset);
+ form.addEventListener('submit',e=>{if(!allow.checked&&(!manual||!accepted||pass.value!==accepted)){e.preventDefault();e.stopImmediatePropagation();reset();document.getElementById('message').textContent='Escribe tu contraseña para esta sesión. No se aceptó una contraseña rellenada automáticamente.';pass.focus();return}},true);
+ reset();setInterval(enforce,100);window.addEventListener('pageshow',reset);window.addEventListener('mp:session-locked',reset);window.addEventListener('mp:login-password-captured',reset);
  document.getElementById('headerLogout').onclick=()=>MP.logout();window.addEventListener('mp:draft-changed',()=>document.getElementById('headerLogout').hidden=document.getElementById('workspace').hidden);
 })();

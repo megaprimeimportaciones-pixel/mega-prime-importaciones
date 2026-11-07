@@ -8,7 +8,7 @@ window.MP = (()=>{
   const r=await fetch(cfg.url+path,{method,cache:'no-store',headers:{apikey:cfg.anonKey,...authorization,...(body instanceof Blob?{}:{'Content-Type':'application/json'}),...headers},body:body===undefined?undefined:body instanceof Blob?body:JSON.stringify(body)});
   const data=await r.text(); let v;try{v=JSON.parse(data)}catch{v=data}
   if(!r.ok){const detail=v?.message||v?.error_description||v?.error||'Error '+r.status;
-   if(path.startsWith('/auth/v1/token')&&v?.error_code==='invalid_credentials')throw Error('Correo o contraseña incorrectos. Usa la contraseña con la que creaste esta cuenta en Supabase; puede ser distinta de la del Word.');
+   if(path.startsWith('/auth/v1/token')&&v?.error_code==='invalid_credentials')throw Error('Usuario o contraseña incorrectos');
    throw Error(detail);
   }
   return v;
