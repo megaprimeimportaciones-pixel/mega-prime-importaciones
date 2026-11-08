@@ -13,3 +13,26 @@
 .mp-media-editor-preview button{margin:12px 6px 0 0}
 .mp-media-editor-fields #videoPreviewArea,.mp-media-editor-fields #stateLegacyPreview{display:none}
 @media(max-width:900px){.mp-media-editor-layout{grid-template-columns:1fr}.mp-media-editor-preview{position:static;grid-row:1}.mp-media-preview-stage video,.mp-media-preview-stage img{max-height:300px}}
+
+.mp-saved-media-panel{margin:22px 0 28px;padding:18px;border:1px solid #465a65;border-radius:14px;background:#0b1b23}
+.mp-saved-media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;margin-top:18px}
+.mp-saved-media-card{min-width:0;border:1px solid #425865;border-radius:12px;padding:12px!important;background:#142831}
+.mp-saved-media-card.mp-media-selected{border-color:#f3c65f;box-shadow:0 0 0 2px #f3c65f}
+.mp-saved-media-open{display:block;width:100%;background:transparent!important;color:#f5f7fa!important;border:0!important;padding:0!important;text-align:left}
+.mp-saved-media-open strong{display:block;margin:12px 0;overflow-wrap:anywhere}
+.mp-saved-media-thumbnail{position:relative;display:flex;align-items:center;justify-content:center;height:145px;border-radius:8px;overflow:hidden;background:#030c11;color:#eec45b;pointer-events:none}
+.mp-saved-media-thumbnail img,.mp-saved-media-thumbnail video{width:100%;height:100%;object-fit:cover}
+.mp-saved-media-thumbnail>span:last-child{position:absolute;background:#071016b3;border-radius:20px;padding:8px 12px}
+.mp-saved-media-state{font-weight:700;color:#f4cc69}
+.mp-saved-media-card p{overflow-wrap:anywhere;font-size:.9rem}
+.mp-saved-media-card>button{margin:6px 6px 0 0}
+
+.mp-content-shortcuts{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin:18px 0 24px}
+.mp-content-shortcuts>p{grid-column:1/-1;line-height:1.6}
+.mp-content-shortcuts>button{white-space:normal;text-align:left;min-height:56px;padding:12px 14px;border-radius:9px}
+.mp-content-image-preview{display:block;width:auto;max-width:min(100%,300px);max-height:180px;object-fit:contain;border-radius:8px;margin:12px 0;background:#102029}
+
+.mp-visibility-switch{display:flex!important;align-items:center;gap:10px;flex-wrap:wrap;padding:10px;border-bottom:1px solid #344b57}
+.mp-visibility-switch button{margin-left:auto;min-width:175px}
+.mp-switch-on{background:#d8b656!important;color:#102029!important}
+.mp-switch-off{background:#304650!important;color:#eef4f7!important}
