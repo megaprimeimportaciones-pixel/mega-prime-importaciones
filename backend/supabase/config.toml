@@ -1,0 +1,4 @@
+# La función valida el JWT con auth.getUser y exige staff_role=owner.
+# Desactivar solo la comprobación heredada del gateway, no la validación del código.
+[functions.manage-users]
+verify_jwt = false

@@ -1,7 +1,7 @@
 import { createClient } from 'npm:@supabase/supabase-js@2.49.8';
 const url=Deno.env.get('SUPABASE_URL')!, secret=Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-const origin=Deno.env.get('SITE_URL')!;
-const siteBase=(Deno.env.get('SITE_BASE_URL')||origin).replace(/\/$/,'');
+const origin=Deno.env.get('SITE_URL')||'https://megaprimeimportaciones-pixel.github.io';
+const siteBase=(Deno.env.get('SITE_BASE_URL')||origin+'/mega-prime-importaciones').replace(/\/$/,'');
 const service=createClient(url,secret,{auth:{persistSession:false}});
 Deno.serve(async req=>{
  const headers={'Access-Control-Allow-Origin':origin,'Access-Control-Allow-Headers':'authorization,apikey,content-type','Access-Control-Allow-Methods':'POST,OPTIONS','Content-Type':'application/json','Cache-Control':'no-store'};
@@ -51,7 +51,7 @@ Deno.serve(async req=>{
     check(await service.from('members').update({revoked_before:new Date().toISOString()}).eq('id',b.id));
    }else if(b.action==='revoke')check(await service.from('members').update({revoked_before:new Date().toISOString()}).eq('id',b.id));
    else if(b.action==='delete')check(await service.auth.admin.deleteUser(b.id));
-   else if(b.action==='reset')check(await service.auth.resetPasswordForEmail(target.email,{redirectTo:siteBase+'/panel.html'}));
+   else if(b.action==='reset')throw Error('Asigna una nueva contraseña al integrante desde el administrador');
    else throw Error('Operación inválida');
   }
   return new Response(JSON.stringify(result),{headers});
