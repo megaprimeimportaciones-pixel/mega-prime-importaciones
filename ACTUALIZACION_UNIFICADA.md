@@ -1,5 +1,7 @@
 # Actualización unificada de Mega Prime Importaciones
 
+La última corrección de guardado de visibilidad, menú y avisos del editor solo requiere GitHub. Si ya ejecutaste el SQL de visibilidad y actualizaste manage-users en la entrega anterior, NO repitas esos pasos.
+
 Este ZIP actualiza el repositorio existente. Contiene 25 archivos. No contiene Word, contraseñas ni claves privadas.
 
 ## 1. GitHub: una sola subida
@@ -62,3 +64,9 @@ Seguridad y recuperación tiene su pestaña propia del propietario: no aparece r
 6. Comprueba minimizar/volver, cerrar sesión y Seguridad y recuperación.
 
 Esta entrega no cambia cuentas, contraseñas ni contenido publicado desde esta PC. La calculadora y el frontend siguen siendo archivos públicos de GitHub Pages: controlar su apertura en la interfaz no convierte sus archivos en secretos. Supabase Auth conserva su API de cambio de contraseña propia: ocultar opciones del panel no bloquea por sí solo las llamadas directas a esa API.
+
+## Corrección de guardado y avisos
+Desactivar una categoría también desactiva su enlace del menú; activarla permite restaurarlo. La web pública oculta el enlace aunque Supabase haya filtrado por completo esa categoría de la respuesta pública.
+Guardar visibilidad y publicar muestra Guardando y luego una confirmación o error al lado del botón. Toma la revisión más reciente para publicar solo los cambios de visibilidad seleccionados y conservar los demás campos publicados. Conserva otros textos del borrador sin publicarlos accidentalmente. Los cambios nuevos realizados durante una solicitud siguen pendientes para el siguiente guardado.
+Las otras pestañas públicas del mismo sitio reciben una señal al publicar y consultan la configuración; al volver a enfocar la página pública también se actualiza. En otro navegador o dispositivo recarga la página para comprobar la nueva publicación.
+Se retiraron los avisos automáticos Borrador local recuperado y Hay una versión publicada nueva. El borrador se conserva; los errores reales de guardado y acceso siguen mostrándose. Los permisos de los integrantes no se ampliaron.
