@@ -13,7 +13,7 @@ Deno.serve(async req=>{
   const {data:{user},error}=await service.auth.getUser(token);if(error||!user)throw Error('Sesión inválida');
   const {data:role,error:roleError}=await scoped.rpc('staff_role');if(roleError||role!=='owner')throw Error('Solo propietario');
   const b=await req.json();let result:unknown={ok:true};
-  const permissionKeys=['edit_content','upload_media','manage_posts','manage_videos','manage_chatbot','manage_inbox','manage_visibility'];
+  const permissionKeys=['edit_content','upload_media','manage_posts','manage_videos','manage_chatbot','manage_inbox','use_calculator','manage_visibility'];
   const permissions=(v:any)=>{if(!v||typeof v!=='object'||Array.isArray(v)||Object.entries(v).some(([k,x])=>!permissionKeys.includes(k)||typeof x!=='boolean'))throw Error('Permisos inválidos');return v};
   const password=(v:any,confirmation:any)=>{if(typeof v!=='string'||v.length<16||v.length>128||v!==confirmation)throw Error('La contraseña debe tener 16 a 128 caracteres y coincidir con su confirmación');return v};
   const check=(r:any)=>{if(r.error)throw r.error;return r.data};

@@ -1,0 +1,15 @@
+.mp-media-editor-layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(280px,.85fr);gap:24px;align-items:start}
+.mp-media-editor-fields{min-width:0}
+.mp-media-editor-preview{position:sticky;top:88px;padding:18px;border:1px solid #50626a;border-radius:14px;background:#13242c;min-width:0}
+.mp-media-editor-preview h2{font-size:1.15rem;margin:0 0 10px;color:#f4c458}
+.mp-media-editor-preview>p{font-size:.85rem;line-height:1.5}
+.mp-media-preview-card{border:1px solid #354a54;border-radius:12px;overflow:hidden;background:#09151b;padding:0!important}
+.mp-media-preview-card h3,.mp-media-preview-card>p{margin:14px;overflow-wrap:anywhere}
+.mp-media-preview-description{white-space:pre-wrap}
+.mp-media-preview-stage{min-height:190px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#050b0f;gap:12px}
+.mp-media-preview-stage>p{padding:20px;text-align:center;color:#b6cad5}
+.mp-media-preview-stage video,.mp-media-preview-stage img{display:block;width:100%;max-height:420px;object-fit:contain}
+.mp-media-preview-stage audio{width:100%}
+.mp-media-editor-preview button{margin:12px 6px 0 0}
+.mp-media-editor-fields #videoPreviewArea,.mp-media-editor-fields #stateLegacyPreview{display:none}
+@media(max-width:900px){.mp-media-editor-layout{grid-template-columns:1fr}.mp-media-editor-preview{position:static;grid-row:1}.mp-media-preview-stage video,.mp-media-preview-stage img{max-height:300px}}
