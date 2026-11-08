@@ -36,3 +36,19 @@
 .mp-visibility-switch button{margin-left:auto;min-width:175px}
 .mp-switch-on{background:#d8b656!important;color:#102029!important}
 .mp-switch-off{background:#304650!important;color:#eef4f7!important}
+
+.mp-catalog-toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:18px 0}
+.mp-catalog-toolbar select,.mp-catalog-toolbar input{width:auto;min-width:180px;flex:1}
+.mp-catalog-toolbar button{white-space:normal}
+.mp-catalog-editor{margin-top:26px;padding-top:20px;border-top:1px solid #4d626d}
+.mp-catalog-editor:empty{display:none}
+.mp-catalog-image-field{margin:16px 0;padding:14px;border:1px solid #334d59;border-radius:10px}
+.mp-catalog-editor details{margin:16px 0;padding:14px;border:1px solid #334d59;border-radius:10px}
+.mp-catalog-editor .mp-media-preview-card{padding:14px!important}
+
+.mp-catalog-palette{margin:18px 0;padding:16px;border:1px solid #cba54d;border-radius:12px}
+.mp-catalog-palette>div{display:flex;flex-wrap:wrap;gap:14px;margin-top:16px}
+.mp-catalog-palette input[type=color]{width:60px;height:38px;padding:2px}
+.mp-catalog-colors{display:flex;gap:12px;flex-wrap:wrap}
+.mp-catalog-colors label{display:flex!important;align-items:center;gap:8px}
+.mp-catalog-colors span{display:inline-block;width:20px;height:20px;border:1px solid #bdcad0;border-radius:50%}

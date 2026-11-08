@@ -20,3 +20,6 @@ Object.assign(window.MPI_CMS_DEFAULTS.company,{missionTitle:'Misión',visionTitl
 Object.assign(window.MPI_CMS_DEFAULTS.updates,{showStorySubtitle:false,storySubtitle:''});
 
 window.MPI_CMS_DEFAULTS.visibility={search:true,cart:true,digitalCatalog:true,chatbot:true,sections:{}};
+
+window.MPI_CMS_DEFAULTS.catalogFamilies ||= [];
+window.MPI_CMS_DEFAULTS.catalogColors ||= {};

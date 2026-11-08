@@ -1,72 +1,44 @@
-# Actualización unificada de Mega Prime Importaciones
+# Actualización unificada: catálogo editable y todas las mejoras anteriores
 
-La última corrección de guardado de visibilidad, menú y avisos del editor solo requiere GitHub. Si ya ejecutaste el SQL de visibilidad y actualizaste manage-users en la entrega anterior, NO repitas esos pasos.
+Este ZIP contiene 32 archivos para actualizar el repositorio existente. Incluye el editor de productos, modelos, categorías, colores y fotos, junto con las correcciones anteriores de usuarios, sesiones, visibilidad, videos y estados. No contiene Word ni contraseñas.
 
-Este ZIP actualiza el repositorio existente. Contiene 25 archivos. No contiene Word, contraseñas ni claves privadas.
+## Aplicar esta ampliación
+1. Extrae ACTUALIZACION_UNIFICADA_MEGA_PRIME.zip y sube su contenido a la raíz de GitHub conservando las carpetas. No borres otros archivos del repositorio.
+2. Título: Añadir editor de productos, modelos, colores y catálogo sincronizado.
+3. Espera Actions verde.
+4. En Supabase SQL Editor ejecuta TODO ACTUALIZAR_CATALOGO_EDITABLE.sql de este paquete. Permite a los editores con permiso de contenido añadir categorías; no les concede activar, ocultar, renombrar o retirar categorías existentes. No borra datos.
+5. Si ya instalaste ACTUALIZAR_VISIBILIDAD_SOLO_ADMIN.sql y actualizaste manage-users en la entrega anterior, no los repitas. manage-users no cambia en esta ampliación. Si no lo hiciste, completa esos pasos anteriores antes de probar permisos.
+6. Recarga el panel y la web con Ctrl+F5.
 
-## 1. GitHub: una sola subida
-Extrae ACTUALIZACION_UNIFICADA_MEGA_PRIME.zip. Sube las carpetas frontend, backend, migraciones y los documentos ACTUALIZAR_VISIBILIDAD_SOLO_ADMIN.sql y ACTUALIZACION_UNIFICADA.md a la raíz del repositorio, conservando las rutas. No borres los otros archivos. No subas el ZIP dentro del repositorio.
-Título: Mejorar editor completo, galerías y controles del administrador.
-Espera Actions verde. Recarga el panel con Ctrl+F5.
+## Productos y categorías: administrador y editor autorizado
+En la barra del panel pulsa Productos y categorías. También los botones de productos y categorías dentro de Contenido llevan al nuevo editor.
+Puedes buscar y filtrar todo el catálogo guardado; las tarjetas identifican registros publicados, cambios en borrador y productos nuevos. Selecciona la foto o Abrir y editar para ver sus datos.
+- Añadir producto: crea otra teja española, Roma, trapezoidal u otro artículo en cualquier categoría. El ID se asigna sin repetir.
+- Duplicar producto: crea una copia para otro modelo. No sustituye al original.
+- Nombre, subtítulo y descripción son editables. El aviso de posible duplicado ayuda a revisar nombres iguales en la misma categoría, sin bloquear modelos legítimos.
+- Categoría y tipo/subcategoría: asigna la familia existente o escribe una nueva. Añadir tipo/subcategoría permite poner su nombre visible en los filtros del cliente.
+- Modelos/medidas: añade presentaciones con nombre, modelo, formato, espesor, ancho total, ancho útil, largo, rendimiento, unidad, observaciones y colores. No se inventan medidas ni fichas verificadas: introduce datos del producto real.
+- Fotos: cambia la principal, revisa y descarga la foto publicada, añade más fotos y crea galerías por color. Los archivos se suben a Storage; guarda el producto para conservar sus enlaces.
+- Bandeja de colores: crea un nombre y elige su tono visual. Puedes modificar tonos y seleccionar colores para cada producto; también escribirlos por líneas y asignar colores por presentación. Pulsa Editar las fotos de estos colores para abrir las galerías correspondientes.
+- Añadir categoría: administrador y editor autorizado pueden crear nuevas categorías visibles. Las nuevas aparecen automáticamente en Explora las categorías y los filtros. Solo el administrador puede renombrar o retirar categorías existentes; al renombrar se actualizan productos y enlaces correspondientes.
+- Orden: Subir/Bajar cambia la secuencia del catálogo y desactiva la prioridad de destacados para respetar el orden manual.
+- Publicado/destacado: puedes guardar productos como borrador, publicarlos y marcarlos destacados.
 
-## 2. Supabase: visibilidad solo del administrador
-SQL Editor → New query. Copia TODO ACTUALIZAR_VISIBILIDAD_SOLO_ADMIN.sql de este paquete y pulsa Run. Este SQL no borra datos. Actualiza la comprobación de permisos existente para impedir que los editores activen u oculten apartados, aunque tuvieran un permiso antiguo. Requiere la instalación anterior con miembros y permisos. No repitas INSTALACION_SUPABASE.sql.
+Guardar en el borrador no cambia la web. Guardar y publicar catálogo publica el conjunto de cambios de la página y conserva la protección de revisión: si otra persona publicó antes, debes revisar/cargar la versión nueva en lugar de sobrescribirla a ciegas. No elimina registros al añadir otro. Los permisos siguen comprobándose en PostgreSQL.
+La capacidad actual es de 500 productos, 80 categorías, 60 presentaciones por producto y 12 fotos por galería. Los límites se indican en el editor; no se promete capacidad ilimitada.
 
-Edge Functions → manage-users → Code → index.ts. Reemplaza TODO con backend/supabase/functions/manage-users/index.ts del paquete y pulsa Deploy updates. Mantén Verify JWT with legacy secret apagado. Esta versión admite use_calculator y rechaza delegar la visibilidad al editor. No crees otra función.
+## Sincronización con catálogo digital
+La página principal y el catálogo digital reciben los productos de public_content, la misma publicación de Supabase. Fotos, títulos, descripciones, modelos, medidas y colores se transfieren juntos. El catálogo digital excluye borradores y categorías ocultas y admite los mismos 500 productos y 60 presentaciones.
+Al publicar, las otras pestañas del mismo navegador reciben una señal y consultan la versión nueva. El catálogo digital también consulta al abrirse, al volver a enfocarlo y cada 45 segundos mientras está visible. En otro dispositivo, recarga para comprobar de inmediato. Los cambios que todavía son borrador no aparecen al público.
 
-Si utilizas recovery para correo alternativo, publica la versión incluida conservando sus secretos. Necesita Resend y Turnstile: mover el formulario no configura esos servicios. La recuperación normal del propietario sigue utilizando Supabase Auth.
+## Permisos y mejoras anteriores
+El editor con Editar textos, fotos, productos y colores y Subir y retirar archivos propios puede mantener productos, medidas, modelos, colores y fotos. La creación de categorías nuevas necesita el SQL de esta entrega. No cambian las restricciones anteriores de cuentas/contraseñas, visibilidad de secciones o acceso a la calculadora.
+Se conservan la pestaña Activar/desactivar apartados solo del propietario, el guardado con confirmación local, la sincronización de categoría y enlace del menú, las galerías de videos/estados con vista previa, el editor de toda la página y la pestaña separada de Seguridad y recuperación. No vuelven los avisos automáticos de borrador recuperado o nueva versión. El Word y las contraseñas existentes no se modifican.
 
-## 3. Editar el contenido
-Entra como propietario o editor con permiso Editar textos, fotos, productos y colores → Contenido.
-Ahora hay botones claros para:
-- Nombre Mega Prime Importaciones y logotipos.
-- Menú: Inicio, Cubiertas, Acabados y demás enlaces.
-- Portada: Ideas para construir, cubiertas y acabados.
-- Fotos que cambian en la portada.
-- Explora las categorías; fotos y descripciones de categorías.
-- Materiales para tu proyecto y productos, fotos, descripciones y colores.
-- Empresa, misión y visión; distribuidores y constructores.
-- Opiniones, valoraciones y promedio general; indicadores.
-- Asesorías y beneficios; contacto y teléfonos; ubicación y mapa.
-- Redes sociales, WhatsApp, cotizaciones y documentos descargables.
-- Títulos de videos y estados; encabezado y pie de página.
-El selector conserva los demás apartados de configuración editable. Pulsa los nombres para desplegar sus campos. Cambiar textos del menú conserva su destino y la categoría interna para no romper los productos.
-Pulsa Aplicar y ver el borrador para revisar. Guarda y publica para que los visitantes vean los cambios.
+## Prueba
+1. Como editor, añade un producto y dos presentaciones con medidas. Crea un color y asigna sus fotos. Guarda y publica.
+2. Comprueba el registro en la web principal y el catálogo digital; cambia otra medida y publica sin duplicarlo.
+3. Añade un producto más en la misma categoría y luego una categoría nueva; comprueba ambos en Explora y en los filtros.
+4. Comprueba como editor que no puedes ocultar categorías existentes ni administrar cuentas. Como propietario conserva esos controles.
+5. Comprueba que los videos, estados, sesiones y visibilidad anteriores siguen funcionando.
 
-## 4. Imágenes publicadas, reemplazo y copia
-Cada campo de imagen muestra su miniatura y permite abrir o descargar la imagen, o subir y usar una nueva. Cuando el borrador tiene una imagen distinta de la configuración publicada, se muestran ambas con etiquetas. Las imágenes se descargan sin credenciales. Si un proveedor externo bloquea la descarga, usa Abrir imagen y guarda desde el navegador.
-En productos puedes añadir y editar galerías y fotos por variante. Las fotos que rotan en la portada pertenecen a los productos destacados: selecciona, ordena, retira o añade hasta 24 fotos. Reemplazar su imagen principal también modifica la foto de ese producto en el catálogo; el editor lo indica.
-Redes sociales conserva enlaces y generación de QR para descargar/copiar. Solo las redes con enlace guardado aparecen en la web.
-
-## 5. Videos y estados guardados
-Antes del formulario aparece la galería Videos activos y permanentes o Estados actuales y guardados. Las tarjetas muestran miniatura, nombre, texto y estado: publicado, borrador o vencido. La galería de videos muestra hasta 50 registros por página; usa Anterior o Más videos para los demás.
-Pulsa una miniatura o Abrir y editar: carga ese mismo registro en el formulario y en la vista previa de la derecha. Guardar modifica ese registro sin duplicarlo. Nuevo video o Nuevo estado inicia otro registro. Puedes Actualizar galería y Eliminar video/estado.
-La vista previa permite reproducir/pausar, adelantar/retroceder 5 segundos y usar los controles nativos. El título y texto cambian sin reiniciar el video. Funciona con archivos locales antes de subirlos. En estados también admite foto con audio opcional. En pantallas pequeñas aparece sobre el formulario.
-Los enlaces externos requieren pulsar Cargar vista previa del enlace y sus controles dependen de la red social. No se carga un reproductor externo en cada miniatura.
-
-## 6. Solo el administrador: mostrar u ocultar
-Pulsa 👁 Activar / desactivar apartados en la barra del panel del administrador.
-Se abre una pestaña propia con botones Activo / Desactivar y Oculto / Activar para inicio, categorías, catálogo, distribuidores, misión, visión, contacto, ubicación, videos, estados y otros apartados, además de los enlaces del menú, carrito, buscador y chatbot.
-Pulsa Guardar visibilidad y publicar. Un editor puede editar contenido según sus permisos, pero no cambiar esta visibilidad. Esta última restricción también se comprueba en Supabase al instalar el SQL del paso 2.
-
-## 7. Usuarios, sesiones y calculadora
-Usuarios y sesiones conserva cuentas activas/suspendidas, crear integrante con contraseña asignada, corregir nombre/correo/contraseña, permisos, revocar y eliminar editores. El propietario se protege de eliminación desde esta lista. La cuenta actual muestra nombre, correo y rol.
-Usar calculadora interna es un permiso separado: desactivado por defecto para editores, siempre habilitado para el propietario. Los cambios de permisos se consultan cada 45 segundos; la calculadora abierta verifica el suyo cada 30 segundos. Recarga la sesión del editor para comprobar de inmediato.
-Minimizar, cambiar de aplicación o recargar conserva la sesión por pestaña. Cerrar sesión elimina el acceso local. No se guarda la contraseña. Restaurar pestañas desde el navegador puede restaurar sessionStorage; en equipos compartidos utiliza Cerrar sesión.
-Seguridad y recuperación tiene su pestaña propia del propietario: no aparece repetida bajo todos los apartados.
-
-## 8. Prueba final
-1. Propietario: abre Contenido y edita en borrador marca, título de portada, un enlace del menú y una imagen. Comprueba miniaturas y descarga una copia.
-2. Abre Fotos que cambian en la portada; comprueba su secuencia y el producto asociado.
-3. Abre Videos permanentes y Estados: selecciona un registro existente de la galería, corrige su texto y comprueba la vista previa. Guarda solo cuando quieras aplicar el cambio.
-4. Propietario: prueba el botón Activar / desactivar apartados, publica y verifica la página del público.
-5. Editor: verifica que puede editar los apartados autorizados y no tiene controles de visibilidad. Comprueba la calculadora con permiso activado y desactivado.
-6. Comprueba minimizar/volver, cerrar sesión y Seguridad y recuperación.
-
-Esta entrega no cambia cuentas, contraseñas ni contenido publicado desde esta PC. La calculadora y el frontend siguen siendo archivos públicos de GitHub Pages: controlar su apertura en la interfaz no convierte sus archivos en secretos. Supabase Auth conserva su API de cambio de contraseña propia: ocultar opciones del panel no bloquea por sí solo las llamadas directas a esa API.
-
-## Corrección de guardado y avisos
-Desactivar una categoría también desactiva su enlace del menú; activarla permite restaurarlo. La web pública oculta el enlace aunque Supabase haya filtrado por completo esa categoría de la respuesta pública.
-Guardar visibilidad y publicar muestra Guardando y luego una confirmación o error al lado del botón. Toma la revisión más reciente para publicar solo los cambios de visibilidad seleccionados y conservar los demás campos publicados. Conserva otros textos del borrador sin publicarlos accidentalmente. Los cambios nuevos realizados durante una solicitud siguen pendientes para el siguiente guardado.
-Las otras pestañas públicas del mismo sitio reciben una señal al publicar y consultan la configuración; al volver a enfocar la página pública también se actualiza. En otro navegador o dispositivo recarga la página para comprobar la nueva publicación.
-Se retiraron los avisos automáticos Borrador local recuperado y Hay una versión publicada nueva. El borrador se conserva; los errores reales de guardado y acceso siguen mostrándose. Los permisos de los integrantes no se ampliaron.

@@ -1,4 +1,4 @@
-<!doctype html><html lang="es"><head><script src="config.js?v=94.1"></script><script src="connection.js?v=95"></script><script src="client.js?v=101"></script><script src="public-bridge.js?v=94.1"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><title>Mega Prime Importaciones | Catálogo digital</title><!-- Tipografía PREMIUM V39: servicio de fuentes opcional, con alternativas locales -->
+<!doctype html><html lang="es"><head><script src="config.js?v=94.1"></script><script src="connection.js?v=95"></script><script src="client.js?v=101"></script><script src="public-bridge.js?v=115"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><title>Mega Prime Importaciones | Catálogo digital</title><!-- Tipografía PREMIUM V39: servicio de fuentes opcional, con alternativas locales -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -1706,7 +1706,13 @@ function mpi80ApplyShopOptions(c){
 window.MPI_APPLY_SHOP_OPTIONS=mpi80ApplyShopOptions;
 mpi80ApplyShopOptions(window.MPI_CMS_DEFAULTS);
 function setSubcategory(s){subcategory=s;renderProducts()}
-function renderSubcategories(){const a=category==='Cubiertas'?roofFamilies.map(f=>[f[0],f[1]]):(extraFamilies[category]||[]);document.getElementById('subcategories').innerHTML=a.length?`<button class="${subcategory==='Todos'?'active':''}" onclick="setSubcategory('Todos')">Todos los tipos</button>`+a.map(f=>`<button class="${subcategory===f[0]?'active':''}" onclick="setSubcategory('${f[0]}')">${f[1]}</button>`).join(''):''}
+function renderSubcategories(){
+ const defaults=category==='Cubiertas'?roofFamilies.map(f=>[f[0],f[1]]):(extraFamilies[category]||[]);
+ const added=(window.MPI_CMS_ACTIVE?.catalogFamilies||[]).filter(f=>f.category===category).map(f=>[String(f.key),String(f.label)]);
+ const actual=products.filter(p=>p.cat===category).map(p=>[p.sub,p.sub]);const families=new Map([...actual,...defaults,...added]);const host=document.getElementById('subcategories');host.replaceChildren();
+ for(const [key,label]of [['Todos','Todos los tipos'],...families]){const b=document.createElement('button');b.type='button';b.className=subcategory===key?'active':'';b.textContent=label;b.onclick=()=>setSubcategory(key);host.append(b)}
+}
+
 function renderProducts(){
  renderSubcategories();const opts=window.MPI_CMS_ACTIVE?.catalog||window.MPI_CMS_DEFAULTS?.catalog||{};
  let a=products.filter(p=>(category==='Todos'||p.cat===category)&&(subcategory==='Todos'||p.sub===subcategory)&&(!opts.onlyFeatured||p.featured===true)&&(`${p.name} ${p.cat} ${p.desc}`.toLowerCase().includes(query)));
@@ -2384,7 +2390,7 @@ function applyManagedCatalog(data){
   const id=Number(p.id)||3000+index;
   const formatList=data.variants.filter(v=>Number(v.productId)===id).map(v=>({label:safeName(v.label),format:safeName(v.format),thickness:String(v.thickness||''),width:String(v.width||''),usefulWidth:String(v.usefulWidth||''),length:String(v.length||''),yield:String(v.yield||''),unit:String(v.unit||'unidad'),model:safeName(v.model),source:safeName(v.source||'Dato registrado en panel local'),price:Number(v.price)||0,colors:Array.isArray(v.colors)?v.colors.slice(0,15):[]}));
   const fallback={label:'Pendiente de completar',format:safeName(p.name),source:'Completar variantes en panel local antes de publicar.'};
-  return {id,name:safeName(p.name),cat:safeName(p.category||'Materiales'),sub:safeName(p.subcategory||'otros'),desc:safeName(p.description||'Consultar detalles.'),price:Number(p.price)||0,featured:p.featured===true,img:String(p.image||''),gallery:Array.isArray(p.gallery)?p.gallery:[],imageSets:p.imageSets&&typeof p.imageSets==='object'?p.imageSets:{},colors:Array.isArray(p.colors)?p.colors:[],presets:formatList.length?formatList:[fallback],illustrative:!p.gallery?.length};
+  return {id,name:safeName(p.name),cat:safeName(p.category||'Materiales'),sub:safeName(p.subcategory||'otros'),desc:String(p.description||'Consultar detalles.').slice(0,3000),price:Number(p.price)||0,featured:p.featured===true,img:String(p.image||''),gallery:Array.isArray(p.gallery)?p.gallery:[],imageSets:p.imageSets&&typeof p.imageSets==='object'?p.imageSets:{},colors:Array.isArray(p.colors)?p.colors:[],presets:formatList.length?formatList:[fallback],illustrative:!p.gallery?.length};
  });
  // Una lista vacía publicada se refleja como catálogo vacío, no se reemplaza por productos de muestra.
  products.splice(0,products.length,...mapped);if(!mapped.some(p=>p.cat===category))category='Todos';subcategory='Todos';renderProducts();const featured=document.getElementById('heroFeature');if(featured)featured.style.display='none';
@@ -2395,15 +2401,7 @@ try{const local=JSON.parse(localStorage.getItem(LOCAL_CATALOG_KEY)||'null');if(l
 const originalDetailPresetsV35=getDetailPresets;
 getDetailPresets=function(p){return Array.isArray(p.presets)&&p.presets.length?p.presets:originalDetailPresetsV35(p)};
 const originalRenderSubcategoriesV35=renderSubcategories;
-renderSubcategories=function(){
- if(!products.some(p=>p.presets)){originalRenderSubcategoriesV35();return}
- const relevant=products.filter(p=>category==='Todos'||p.cat===category);
- const unique=[...new Map(relevant.map(p=>[p.sub,p])).values()].map(p=>({key:p.sub,label:p.sub==='otros'?p.name:p.sub}));
- const e=document.getElementById('subcategories');
- e.replaceChildren();
- const entries=[{key:'Todos',label:'Todos'},...unique];
- for(const x of entries){const b=document.createElement('button');b.type='button';b.textContent=x.label;b.className=subcategory===x.key?'active':'';b.addEventListener('click',()=>setSubcategory(x.key));e.append(b);}
-};
+renderSubcategories=function(){originalRenderSubcategoriesV35()};
 
 </script>
 
@@ -2444,7 +2442,7 @@ window.MPI_cleanConfig=function(input){
  if(!input||typeof input!=='object'||![41,43].includes(Number(input.schema)))throw Error('Configuración incompatible (versiones admitidas: 41 y 43)');
  const d=window.MPI_clone(window.MPI_CMS_DEFAULTS);
  for(const [k,v] of Object.entries(input)){
-   if((k in d && (typeof v===typeof d[k] || (Array.isArray(v)&&Array.isArray(d[k])))) || (['company','indicators','supplier','technicalBenefits','location','chatbot','contactSection','updates','videoLibrary','visibility'].includes(k)&&v!==null&&typeof v==='object'&&!Array.isArray(v))) d[k]=v;
+   if((k==='catalogFamilies'&&Array.isArray(v)) || (k in d && (typeof v===typeof d[k] || (Array.isArray(v)&&Array.isArray(d[k])))) || (['catalogColors','company','indicators','supplier','technicalBenefits','location','chatbot','contactSection','updates','videoLibrary','visibility'].includes(k)&&v!==null&&typeof v==='object'&&!Array.isArray(v))) d[k]=v;
  }
 
  d.catalog={...window.MPI_CMS_DEFAULTS.catalog,...(input.catalog&&typeof input.catalog==='object'?input.catalog:{})};
@@ -2567,9 +2565,10 @@ function renderCategoriesCms(config){
  const filters=$('#filters'),sort=$('#sort');if(filters&&sort){filters.replaceChildren();for(const name of vis.map(c=>c.name)){const b=el('button',name===category?'on':'',name);b.type='button';b.addEventListener('click',()=>setCategory(name));filters.append(b)}filters.append(sort)}
 }
 function applyProductsCms(c){
+ for(const [name,hex]of Object.entries(c.catalogColors||{}))if(/^#[0-9a-f]{6}$/i.test(hex)&&!['__proto__','constructor','prototype'].includes(name))swatchColors[name]=hex;
  const visibleCategories=new Set((c.categories||[]).filter(cat=>cat.visible!==false).map(cat=>String(cat.name)));
  const active=(c.products||[]).filter(p=>p.published!==false&&visibleCategories.has(String(p.category||'Materiales')));
- const mapped={products:active.map(p=>({id:+p.id,name:String(p.name||''),category:String(p.category||'Materiales'),subcategory:String(p.subcategory||'otros'),description:String(p.description||''),image:safeImg(p.image)||'',colors:(p.colors||[]).map(x=>String(x)),gallery:(p.gallery||[]).map(safeImg).filter(Boolean),imageSets:Object.fromEntries(Object.entries(p.imageSets||{}).map(([color,arr])=>[color,(Array.isArray(arr)?arr:[]).map(safeImg).filter(Boolean)])),price:Number(p.price)||0,featured:p.featured===true})),variants:active.flatMap(p=>(p.presets||[]).map((v,i)=>({...v,id:i+1,productId:+p.id}))) };
+ const mapped={products:active.map(p=>({id:+p.id,name:String(p.name||''),category:String(p.category||'Materiales'),subcategory:String(p.subcategory||'otros'),description:[p.subtitle,p.description].filter(Boolean).join(' — '),image:safeImg(p.image)||'',colors:(p.colors||[]).map(x=>String(x)),gallery:(p.gallery||[]).map(safeImg).filter(Boolean),imageSets:Object.fromEntries(Object.entries(p.imageSets||{}).map(([color,arr])=>[color,(Array.isArray(arr)?arr:[]).map(safeImg).filter(Boolean)])),price:Number(p.price)||0,featured:p.featured===true})),variants:active.flatMap(p=>(p.presets||[]).map((v,i)=>({...v,id:i+1,productId:+p.id}))) };
  if(typeof applyManagedCatalog==='function')applyManagedCatalog(mapped);
  window.mpiSetHeroFeatured?.(c.hero?.featuredIds?.length?c.hero.featuredIds:active.filter(p=>p.featured).map(p=>p.id));window.MPI_SET_CAROUSEL?.(c.catalog.autoCarousel!==false,c.catalog.autoSeconds);
 }
@@ -4281,4 +4280,4 @@ if('ResizeObserver' in window)new ResizeObserver(schedule).observe(shell);
 measure();
 })();
 </script>
-<script src="integrations-defaults.js?v=101"></script><link rel="stylesheet" href="public-integrations.css?v=94.1"><link rel="stylesheet" href="interaction-refinements.css?v=94.1"><script src="contact-settings.js?v=101"></script><script src="social-settings.js?v=101"></script><script src="public-integrations.js?v=101"></script><link rel="stylesheet" href="effects.css?v=94.1"><script src="effects.js?v=94.1"></script><link rel="stylesheet" href="animated-chatbot.css?v=94.2"><script src="animated-chatbot.js?v=94.2"></script><link rel="stylesheet" href="stories.css?v=94.3"><script src="story-playback.js?v=99"></script><script src="stories.js?v=99"></script><link rel="stylesheet" href="workspace-features.css?v=101"><script src="video-library.js?v=97"></script><script src="chat-workspace.js?v=101"></script><script src="story-reactions.js?v=99"></script><script src="story-comments.js?v=98"></script><script src="calculator-access.js?v=108"></script><script src="vendor/qrcodegen.js"></script><script src="share-qr.js?v=101"></script><script src="visibility-controls.js?v=114"></script><script src="quote-messages.js?v=101"></script></body></html>
+<script src="integrations-defaults.js?v=115"></script><link rel="stylesheet" href="public-integrations.css?v=94.1"><link rel="stylesheet" href="interaction-refinements.css?v=94.1"><script src="contact-settings.js?v=101"></script><script src="social-settings.js?v=101"></script><script src="public-integrations.js?v=101"></script><link rel="stylesheet" href="effects.css?v=94.1"><script src="effects.js?v=94.1"></script><link rel="stylesheet" href="animated-chatbot.css?v=94.2"><script src="animated-chatbot.js?v=94.2"></script><link rel="stylesheet" href="stories.css?v=94.3"><script src="story-playback.js?v=99"></script><script src="stories.js?v=99"></script><link rel="stylesheet" href="workspace-features.css?v=101"><script src="video-library.js?v=97"></script><script src="chat-workspace.js?v=101"></script><script src="story-reactions.js?v=99"></script><script src="story-comments.js?v=98"></script><script src="calculator-access.js?v=108"></script><script src="vendor/qrcodegen.js"></script><script src="share-qr.js?v=101"></script><script src="visibility-controls.js?v=115"></script><script src="quote-messages.js?v=101"></script></body></html>
