@@ -52,3 +52,9 @@
 .mp-catalog-colors{display:flex;gap:12px;flex-wrap:wrap}
 .mp-catalog-colors label{display:flex!important;align-items:center;gap:8px}
 .mp-catalog-colors span{display:inline-block;width:20px;height:20px;border:1px solid #bdcad0;border-radius:50%}
+
+.mp-published-category{padding:18px;margin-bottom:24px;border:1px solid #50626a;border-radius:14px;background:#0b1b23}
+.mp-published-category>.mp-saved-media-grid{max-height:430px;overflow-y:auto;padding:8px;scrollbar-gutter:stable}
+.mp-published-category h2{color:#f4c458}
+.mp-catalog-editor .mp-media-preview-card img{width:100%;max-width:100%;max-height:260px;object-fit:contain;background:#fff}
+.mp-catalog-editor .mp-media-preview-card{min-height:220px}

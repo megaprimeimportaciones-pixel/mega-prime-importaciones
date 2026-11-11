@@ -1,10 +1,10 @@
 # Actualización unificada: catálogo editable y todas las mejoras anteriores
 
-Este ZIP contiene 33 archivos para actualizar el repositorio existente. Incluye el editor de productos, modelos, categorías, colores y fotos, junto con las correcciones anteriores de usuarios, sesiones, visibilidad, videos y estados. No contiene Word ni contraseñas.
+Este ZIP contiene 37 archivos para actualizar el repositorio existente. Incluye el editor de productos, modelos, categorías, colores y fotos, junto con las correcciones anteriores de usuarios, sesiones, visibilidad, videos y estados. No contiene Word ni contraseñas.
 
 ## Aplicar esta ampliación
 1. Extrae ACTUALIZACION_UNIFICADA_MEGA_PRIME.zip y sube su contenido a la raíz de GitHub conservando las carpetas. No borres otros archivos del repositorio.
-2. Título: Organizar grupos y productos con fotos y medidas por modelo.
+2. Título: Corregir vista previa y galería de productos publicados.
 3. Espera Actions verde.
 4. Esta ampliación de grupos y fotos por modelo no requiere cambios nuevos en Supabase. Solo si todavía no aplicaste ACTUALIZAR_CATALOGO_EDITABLE.sql de la entrega anterior, ejecútalo en SQL Editor. Permite a los editores con permiso de contenido añadir categorías; no les concede activar, ocultar, renombrar o retirar categorías existentes. No borra datos.
 5. Si ya instalaste ACTUALIZAR_VISIBILIDAD_SOLO_ADMIN.sql y actualizaste manage-users en la entrega anterior, no los repitas. manage-users no cambia en esta ampliación. Si no lo hiciste, completa esos pasos anteriores antes de probar permisos.
@@ -51,3 +51,10 @@ Selecciona Productos para añadir artículos al grupo existente. Puedes crear pr
 Pulsa Guardar y publicar para reflejarlo en la página principal y el catálogo digital. La navegación pública permite abrir categoría, grupo y tarjetas de los modelos publicados, y después la ficha del modelo elegido. Las fotografías de referencia no se cargan como inventario: sube las imágenes reales de tus artículos.
 
 Para el tornillo que faltaba: abre el producto correcto (el encabezado indica cuál estás editando), asigna la foto al producto o a su modelo y guarda y publica. Seleccionar o subir un archivo sin guardar el registro no publica esa imagen. Los datos publicados consultados todavía conservaban la imagen general de herramientas en Tornillos y fijaciones.
+
+## Vista previa inmediata y productos publicados (actualización 117)
+- Al seleccionar una foto JPG, PNG o WEBP aparece de inmediato en el campo y en la vista previa de la derecha, antes de subirla. Puedes cambiar título, descripción, medidas y colores viendo el resultado. Guardar en el borrador o Guardar y publicar sube automáticamente las imágenes seleccionadas. Una subida fallida impide confirmar el guardado; no se publica un enlace local del navegador.
+- Encima del formulario aparece Publicado en [categoría], con TODOS los productos/modelos publicados de esa categoría, fotos, medidas y colores, incluso mientras creas otro producto. La galería tiene desplazamiento y cada tarjeta permite Editar este producto. Se distingue de la vista previa de tus cambios todavía sin publicar.
+- Si solo asignas foto a un modelo y el producto aún no tiene principal, se usa esa primera foto como portada al guardar.
+- Cargar 4 ejemplos ficticios añade cuatro borradores de guía en la categoría seleccionada. Incluye nombres, medidas ficticias, colores e ilustraciones. Se puede repetir en cada categoría. No duplica ejemplos iguales ni altera los artículos existentes. Sustituye los datos antes de publicarlos. El administrador y los editores con permiso de contenido tienen las mismas opciones; subir archivos sigue requiriendo su permiso correspondiente.
+- Esta corrección se sube a GitHub; no requiere SQL nuevo ni reemplazar manage-users en Supabase. Conserva los pasos anteriores solo para quien no los haya completado.
