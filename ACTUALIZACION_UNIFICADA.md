@@ -1,12 +1,12 @@
 # Actualización unificada: catálogo editable y todas las mejoras anteriores
 
-Este ZIP contiene 32 archivos para actualizar el repositorio existente. Incluye el editor de productos, modelos, categorías, colores y fotos, junto con las correcciones anteriores de usuarios, sesiones, visibilidad, videos y estados. No contiene Word ni contraseñas.
+Este ZIP contiene 33 archivos para actualizar el repositorio existente. Incluye el editor de productos, modelos, categorías, colores y fotos, junto con las correcciones anteriores de usuarios, sesiones, visibilidad, videos y estados. No contiene Word ni contraseñas.
 
 ## Aplicar esta ampliación
 1. Extrae ACTUALIZACION_UNIFICADA_MEGA_PRIME.zip y sube su contenido a la raíz de GitHub conservando las carpetas. No borres otros archivos del repositorio.
-2. Título: Añadir editor de productos, modelos, colores y catálogo sincronizado.
+2. Título: Organizar grupos y productos con fotos y medidas por modelo.
 3. Espera Actions verde.
-4. En Supabase SQL Editor ejecuta TODO ACTUALIZAR_CATALOGO_EDITABLE.sql de este paquete. Permite a los editores con permiso de contenido añadir categorías; no les concede activar, ocultar, renombrar o retirar categorías existentes. No borra datos.
+4. Esta ampliación de grupos y fotos por modelo no requiere cambios nuevos en Supabase. Solo si todavía no aplicaste ACTUALIZAR_CATALOGO_EDITABLE.sql de la entrega anterior, ejecútalo en SQL Editor. Permite a los editores con permiso de contenido añadir categorías; no les concede activar, ocultar, renombrar o retirar categorías existentes. No borra datos.
 5. Si ya instalaste ACTUALIZAR_VISIBILIDAD_SOLO_ADMIN.sql y actualizaste manage-users en la entrega anterior, no los repitas. manage-users no cambia en esta ampliación. Si no lo hiciste, completa esos pasos anteriores antes de probar permisos.
 6. Recarga el panel y la web con Ctrl+F5.
 
@@ -42,3 +42,12 @@ Se conservan la pestaña Activar/desactivar apartados solo del propietario, el g
 4. Comprueba como editor que no puedes ocultar categorías existentes ni administrar cuentas. Como propietario conserva esos controles.
 5. Comprueba que los videos, estados, sesiones y visibilidad anteriores siguen funcionando.
 
+
+## Grupos y productos como las referencias
+En Productos y categorías selecciona Grupos: tornillos, perfiles, tejas y accesorios. Crea o edita cada grupo con nombre, descripción e imagen. Por ejemplo, un grupo Tornillos y capuchones dentro de Accesorios.
+
+Selecciona Productos para añadir artículos al grupo existente. Puedes crear productos independientes o añadir varias presentaciones dentro de un producto. Cada modelo admite su propia foto, descripción, características, galería, medidas y colores. El administrador y el editor con los permisos de contenido y archivos tienen estas opciones. Las tarjetas del panel permiten revisar los modelos y sus imágenes guardadas.
+
+Pulsa Guardar y publicar para reflejarlo en la página principal y el catálogo digital. La navegación pública permite abrir categoría, grupo y tarjetas de los modelos publicados, y después la ficha del modelo elegido. Las fotografías de referencia no se cargan como inventario: sube las imágenes reales de tus artículos.
+
+Para el tornillo que faltaba: abre el producto correcto (el encabezado indica cuál estás editando), asigna la foto al producto o a su modelo y guarda y publica. Seleccionar o subir un archivo sin guardar el registro no publica esa imagen. Los datos publicados consultados todavía conservaban la imagen general de herramientas en Tornillos y fijaciones.

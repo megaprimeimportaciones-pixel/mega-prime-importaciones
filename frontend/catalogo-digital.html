@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
-<head><script src="config.js?v=94.1"></script><script src="connection.js?v=95"></script><script src="client.js?v=101"></script><script src="public-bridge.js?v=115"></script>
+<head><script src="config.js?v=94.1"></script><script src="connection.js?v=95"></script><script src="client.js?v=101"></script><script src="public-bridge.js?v=116"></script>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <title>Mega Prime Importaciones · Catálogo digital</title>
@@ -609,7 +609,7 @@ window.addEventListener('message',function(event){
       colors:Array.isArray(p.colors)?p.colors.map(String).slice(0,35):[],
       gallery:Array.isArray(p.gallery)?p.gallery.slice(0,12).map(String):[],
       imageSets:p.imageSets&&typeof p.imageSets==='object'?p.imageSets:{},
-      presets:Array.isArray(p.presets)?p.presets.slice(0,60).map(v=>({label:String(v.label||'').slice(0,110),format:String(v.format||'').slice(0,100),model:String(v.model||'').slice(0,100),thickness:String(v.thickness||'').slice(0,32),width:String(v.width||'').slice(0,32),usefulWidth:String(v.usefulWidth||'').slice(0,32),length:String(v.length||'').slice(0,32),yield:String(v.yield||'').slice(0,80),colors:Array.isArray(v.colors)?v.colors.map(String).slice(0,35):[],unit:String(v.unit||'').slice(0,48)})):[],
+      presets:Array.isArray(p.presets)?p.presets.slice(0,60).map(v=>({label:String(v.label||'').slice(0,110),image:String(v.image||''),description:String(v.description||'').slice(0,3000),benefits:Array.isArray(v.benefits)?v.benefits.map(String).slice(0,12):[],gallery:Array.isArray(v.gallery)?v.gallery.slice(0,12).map(String):[],format:String(v.format||'').slice(0,100),model:String(v.model||'').slice(0,100),thickness:String(v.thickness||'').slice(0,32),width:String(v.width||'').slice(0,32),usefulWidth:String(v.usefulWidth||'').slice(0,32),length:String(v.length||'').slice(0,32),yield:String(v.yield||'').slice(0,80),colors:Array.isArray(v.colors)?v.colors.map(String).slice(0,35):[],unit:String(v.unit||'').slice(0,48)})):[],
       catalogDescription:String(p.catalogDescription||'').slice(0,3000),catalogBenefits:Array.isArray(p.catalogBenefits)?p.catalogBenefits.map(String).slice(0,12):[],catalogSpecs:Array.isArray(p.catalogSpecs)?p.catalogSpecs.slice(0,25).map(x=>({label:String(x.label||'').slice(0,80),value:String(x.value||'').slice(0,200)})):[],
       published:p.published!==false,price:Number(p.price)||0 }));
   if(data.paper==='A4'||data.paper==='A5'){const paperPicker=document.getElementById('mpiBookPaper');if(paperPicker)paperPicker.value=data.paper;}
@@ -885,5 +885,5 @@ if(window.parent===window && location.protocol.startsWith('http')){
 }
 </style>
 <style id="mpi85PageSizeRule">@page{size:A4 portrait;margin:0}</style>
-<script src="story-reactions.js?v=97"></script></body>
+<script src="story-reactions.js?v=97"></script><script src="product-family-browser.js?v=116"></script></body>
 </html>

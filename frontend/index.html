@@ -1,4 +1,4 @@
-<!doctype html><html lang="es"><head><script src="config.js?v=94.1"></script><script src="connection.js?v=95"></script><script src="client.js?v=101"></script><script src="public-bridge.js?v=115"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><title>Mega Prime Importaciones | Catálogo digital</title><!-- Tipografía PREMIUM V39: servicio de fuentes opcional, con alternativas locales -->
+<!doctype html><html lang="es"><head><script src="config.js?v=94.1"></script><script src="connection.js?v=95"></script><script src="client.js?v=101"></script><script src="public-bridge.js?v=116"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><title>Mega Prime Importaciones | Catálogo digital</title><!-- Tipografía PREMIUM V39: servicio de fuentes opcional, con alternativas locales -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -1837,7 +1837,7 @@ function detailColors(p){
  if(Array.isArray(preset?.colors)&&preset.colors.length)return preset.colors;
  // Paleta de referencia administrable: no acredita stock de cada color.
  if(p.sub==='policarbonato')return ['Transparente','Opal','Bronce','Blanco','Gris humo','Celeste','Azul','Verde','Naranja','Rojo','Amarillo','Turquesa'];
- if(p.cat==='Herramientas'||p.cat==='Maquinarias')return ['No aplica'];
+ if(Array.isArray(p.colors)&&p.colors.length)return p.colors;if(p.cat==='Herramientas'||p.cat==='Maquinarias')return ['No aplica'];
  if(p.cat==='Accesorios')return ['No aplica','Blanco','Gris','Negro'];
  return p.colors||['Por definir'];
 }
@@ -1852,7 +1852,7 @@ function getDetailPresets(p){
 }
 function fieldSection(p){if(p.cat==='Herramientas'||p.cat==='Maquinarias')return 'equipment';if(p.sub==='spc')return 'floor';if(['barrederas','cornisas','perfiles','fijaciones','remates'].includes(p.sub)||p.cat==='Accesorios')return 'linear';return 'sheet'}
 function defaultUnit(p,preset){return preset.unit||(fieldSection(p)==='equipment'?'unidad':fieldSection(p)==='floor'?'caja':fieldSection(p)==='linear'?'pieza':p.sub==='cielo'?'lama':p.cat==='Cubiertas'?'plancha':'panel')}
-function newDetailState(p,i){const preset=getDetailPresets(p)[i]||{};return {preset:i,format:preset.format||p.name,thickness:preset.thickness||'',width:preset.width||'',usefulWidth:preset.usefulWidth||'',length:preset.length||'',model:'',unit:defaultUnit(p,preset),qty:1,notes:'',color:detailColor||'Por definir',source:preset.source||''}}
+function newDetailState(p,i){const preset=getDetailPresets(p)[i]||{};return {preset:i,format:preset.format||p.name,thickness:preset.thickness||'',width:preset.width||'',usefulWidth:preset.usefulWidth||'',length:preset.length||'',model:preset.model||'',unit:defaultUnit(p,preset),qty:1,notes:'',color:detailColor||'Por definir',source:preset.source||''}}
 function openDetail(id){const p=products.find(x=>x.id===id);if(!p)return;detailId=id;detailPhoto=0;detailColor=detailColors(p)[0]||'Por definir';detailFormState=newDetailState(p,0);renderDetail();openModal('detailModal');const dialog=document.querySelector('#detailModal .dialog');if(dialog)dialog.scrollTop=0}
 function chooseColor(c){detailColor=c;detailFormState.color=c;document.querySelectorAll('#detailContent .swatches button').forEach(b=>{const selected=b.dataset.color===c;b.classList.toggle('selected',selected);b.setAttribute('aria-pressed',String(selected))});const label=document.getElementById('selectedColor');if(label)label.textContent=c;refreshCatalogGallery();updateDetailPreview()}
 function choosePhoto(i){detailPhoto=i;const p=products.find(x=>x.id===detailId);if(!p)return;const gallery=getProductGallery(p,detailColor);document.getElementById('detailMainPhoto').src=photo(gallery[i]);document.querySelectorAll('#detailContent .thumbs button').forEach((b,j)=>b.classList.toggle('selected',i===j))}
@@ -1930,7 +1930,7 @@ function renderDetail(){const p=products.find(x=>x.id===detailId);if(!p)return;
  const colors=detailColors(p);
  const step=allowsFractionalQty(units)?'0.001':'1';
  const quantity=`<div class="config-field"><label for="dQty">Cantidad solicitada (${escapeText(units)})</label><div class="config-quantity"><button type="button" onclick="adjustDetailQty(-1)" aria-label="Disminuir cantidad">−</button><input id="dQty" type="number" min="${step}" max="100000" step="${step}" value="${detailFormState.qty}" oninput="updateDetailPreview()"><button type="button" onclick="adjustDetailQty(1)" aria-label="Aumentar cantidad">+</button></div><small>${allowsFractionalQty(units)?'Puedes ingresar decimales.':'Solo cantidades enteras.'}</small></div>`;
- const specs=Array.isArray(p.presets)&&p.presets.length?[['Formato',preset.format],['Modelo',preset.model],['Espesor',preset.thickness?String(preset.thickness)+' mm':''],['Ancho comercial',preset.width?String(preset.width)+' m':''],['Ancho útil',preset.usefulWidth?String(preset.usefulWidth)+' m':''],['Largo',preset.length?String(preset.length)+' m':''],['Ficha o procedencia',preset.source]].filter(r=>r[1]):p.sub==='espanola'?[['Espesor documentado','2,5 mm'],['Ancho total','1,050 m'],['Ancho útil','0,960 m']]:p.sub==='cresta'?[['Espesor documentado','2,0 mm'],['Ancho total','1,080 m'],['Ancho útil','1,005 m']]:p.sub==='policarbonato'?[['Polyrise 8 mm','2,10 × 11,80 / 1,20 × 6,00 m (según datos aportados)'],['Glanze','Ancho útil 2,10 m (según datos aportados)']]:[];
+ const specs=Array.isArray(p.presets)&&p.presets.length?[['Formato',preset.format],['Modelo',preset.model],['Espesor',preset.thickness?(/^[0-9.,\s]+$/.test(String(preset.thickness))?String(preset.thickness)+' mm':String(preset.thickness)):''],['Ancho comercial',preset.width?(/^[0-9.,\s]+$/.test(String(preset.width))?String(preset.width)+' m':String(preset.width)):''],['Ancho útil',preset.usefulWidth?(/^[0-9.,\s]+$/.test(String(preset.usefulWidth))?String(preset.usefulWidth)+' m':String(preset.usefulWidth)):''],['Largo',preset.length?(/^[0-9.,\s]+$/.test(String(preset.length))?String(preset.length)+' m':String(preset.length)):''],['Ficha o procedencia',preset.source]].filter(r=>r[1]):p.sub==='espanola'?[['Espesor documentado','2,5 mm'],['Ancho total','1,050 m'],['Ancho útil','0,960 m']]:p.sub==='cresta'?[['Espesor documentado','2,0 mm'],['Ancho total','1,080 m'],['Ancho útil','1,005 m']]:p.sub==='policarbonato'?[['Polyrise 8 mm','2,10 × 11,80 / 1,20 × 6,00 m (según datos aportados)'],['Glanze','Ancho útil 2,10 m (según datos aportados)']]:[];
  const titleInBar=document.getElementById('detailTopTitle');if(titleInBar)titleInBar.textContent=p.name;
  document.getElementById('detailContent').innerHTML=`
  <div class="detail-layout detail-layout-three">
@@ -2300,12 +2300,14 @@ showProductPanel('gallery',false);
 
 /* V33: vistas fotográficas procedentes exclusivamente del catálogo cargado. */
 function getProductGallery(p,color){
- const colorPhotos=p.imageSets&&Array.isArray(p.imageSets[color])?p.imageSets[color]:null;
- const gallery=colorPhotos&&colorPhotos.length?colorPhotos:Array.isArray(p.gallery)&&p.gallery.length?p.gallery:null;
- const verified=(gallery||[]).filter(x=>typeof x==='string'&&(/^https:\/\//i.test(x)||/^data:image\/jpeg;base64,/i.test(x)||/^\/uploads\/products\/[a-z0-9._-]+$/i.test(x))).slice(0,8);
- // Si no hay fotos de referencia verificadas, continuar mostrando una sola foto ilustrativa.
- return verified.length?verified:[p.img];
+ const variant=getDetailPresets(p)[detailFormState.preset||0]||{};
+ const modelPhotos=[variant.image,...(Array.isArray(variant.gallery)?variant.gallery:[])].filter(Boolean);
+ const colorPhotos=p.imageSets&&Array.isArray(p.imageSets[color])?p.imageSets[color]:[];
+ const gallery=modelPhotos.length?modelPhotos:colorPhotos.length?colorPhotos:Array.isArray(p.gallery)&&p.gallery.length?p.gallery:[p.img];
+ const valid=gallery.filter(x=>typeof x==='string'&&(window.MPI_safeImage?!!MPI_safeImage(x):/^https:\/\//i.test(x))).slice(0,12);
+ return valid.length?valid:[p.img];
 }
+
 function refreshCatalogGallery(){
  const p=products.find(x=>x.id===detailId);if(!p)return;detailPhoto=0;
  const gallery=getProductGallery(p,detailColor);const img=document.getElementById('detailMainPhoto');
@@ -2388,7 +2390,7 @@ function applyManagedCatalog(data){
  const safeName=v=>String(v||'').slice(0,120);
  const mapped=data.products.slice(0,500).map((p,index)=>{
   const id=Number(p.id)||3000+index;
-  const formatList=data.variants.filter(v=>Number(v.productId)===id).map(v=>({label:safeName(v.label),format:safeName(v.format),thickness:String(v.thickness||''),width:String(v.width||''),usefulWidth:String(v.usefulWidth||''),length:String(v.length||''),yield:String(v.yield||''),unit:String(v.unit||'unidad'),model:safeName(v.model),source:safeName(v.source||'Dato registrado en panel local'),price:Number(v.price)||0,colors:Array.isArray(v.colors)?v.colors.slice(0,15):[]}));
+  const formatList=data.variants.filter(v=>Number(v.productId)===id).map(v=>({label:safeName(v.label),format:safeName(v.format),thickness:String(v.thickness||''),width:String(v.width||''),usefulWidth:String(v.usefulWidth||''),length:String(v.length||''),yield:String(v.yield||''),unit:String(v.unit||'unidad'),model:safeName(v.model),source:safeName(v.source||'Dato registrado en panel local'),price:Number(v.price)||0,colors:Array.isArray(v.colors)?v.colors.slice(0,35):[],image:String(v.image||''),description:String(v.description||''),benefits:Array.isArray(v.benefits)?v.benefits.slice(0,12):[],gallery:Array.isArray(v.gallery)?v.gallery.slice(0,12):[]}));
   const fallback={label:'Pendiente de completar',format:safeName(p.name),source:'Completar variantes en panel local antes de publicar.'};
   return {id,name:safeName(p.name),cat:safeName(p.category||'Materiales'),sub:safeName(p.subcategory||'otros'),desc:String(p.description||'Consultar detalles.').slice(0,3000),price:Number(p.price)||0,featured:p.featured===true,img:String(p.image||''),gallery:Array.isArray(p.gallery)?p.gallery:[],imageSets:p.imageSets&&typeof p.imageSets==='object'?p.imageSets:{},colors:Array.isArray(p.colors)?p.colors:[],presets:formatList.length?formatList:[fallback],illustrative:!p.gallery?.length};
  });
@@ -4280,4 +4282,4 @@ if('ResizeObserver' in window)new ResizeObserver(schedule).observe(shell);
 measure();
 })();
 </script>
-<script src="integrations-defaults.js?v=115"></script><link rel="stylesheet" href="public-integrations.css?v=94.1"><link rel="stylesheet" href="interaction-refinements.css?v=94.1"><script src="contact-settings.js?v=101"></script><script src="social-settings.js?v=101"></script><script src="public-integrations.js?v=101"></script><link rel="stylesheet" href="effects.css?v=94.1"><script src="effects.js?v=94.1"></script><link rel="stylesheet" href="animated-chatbot.css?v=94.2"><script src="animated-chatbot.js?v=94.2"></script><link rel="stylesheet" href="stories.css?v=94.3"><script src="story-playback.js?v=99"></script><script src="stories.js?v=99"></script><link rel="stylesheet" href="workspace-features.css?v=101"><script src="video-library.js?v=97"></script><script src="chat-workspace.js?v=101"></script><script src="story-reactions.js?v=99"></script><script src="story-comments.js?v=98"></script><script src="calculator-access.js?v=108"></script><script src="vendor/qrcodegen.js"></script><script src="share-qr.js?v=101"></script><script src="visibility-controls.js?v=115"></script><script src="quote-messages.js?v=101"></script></body></html>
+<script src="integrations-defaults.js?v=115"></script><link rel="stylesheet" href="public-integrations.css?v=94.1"><link rel="stylesheet" href="interaction-refinements.css?v=94.1"><script src="contact-settings.js?v=101"></script><script src="social-settings.js?v=101"></script><script src="public-integrations.js?v=101"></script><link rel="stylesheet" href="effects.css?v=94.1"><script src="effects.js?v=94.1"></script><link rel="stylesheet" href="animated-chatbot.css?v=94.2"><script src="animated-chatbot.js?v=94.2"></script><link rel="stylesheet" href="stories.css?v=94.3"><script src="story-playback.js?v=99"></script><script src="stories.js?v=99"></script><link rel="stylesheet" href="workspace-features.css?v=101"><script src="video-library.js?v=97"></script><script src="chat-workspace.js?v=101"></script><script src="story-reactions.js?v=99"></script><script src="story-comments.js?v=98"></script><script src="calculator-access.js?v=108"></script><script src="vendor/qrcodegen.js"></script><script src="share-qr.js?v=101"></script><script src="visibility-controls.js?v=115"></script><script src="quote-messages.js?v=101"></script><script src="product-family-browser.js?v=116"></script></body></html>
