@@ -1,10 +1,10 @@
 # Actualización unificada: catálogo editable y todas las mejoras anteriores
 
-Este ZIP contiene 37 archivos para actualizar el repositorio existente. Incluye el editor de productos, modelos, categorías, colores y fotos, junto con las correcciones anteriores de usuarios, sesiones, visibilidad, videos y estados. No contiene Word ni contraseñas.
+Este ZIP contiene 77 archivos para actualizar el repositorio existente. Incluye el editor de productos, modelos, categorías, colores y fotos, junto con las correcciones anteriores de usuarios, sesiones, visibilidad, videos y estados. No contiene Word ni contraseñas.
 
 ## Aplicar esta ampliación
 1. Extrae ACTUALIZACION_UNIFICADA_MEGA_PRIME.zip y sube su contenido a la raíz de GitHub conservando las carpetas. No borres otros archivos del repositorio.
-2. Título: Corregir vista previa y galería de productos publicados.
+2. Título: Acercar guardado y agrupar productos con vistas previas.
 3. Espera Actions verde.
 4. Esta ampliación de grupos y fotos por modelo no requiere cambios nuevos en Supabase. Solo si todavía no aplicaste ACTUALIZAR_CATALOGO_EDITABLE.sql de la entrega anterior, ejecútalo en SQL Editor. Permite a los editores con permiso de contenido añadir categorías; no les concede activar, ocultar, renombrar o retirar categorías existentes. No borra datos.
 5. Si ya instalaste ACTUALIZAR_VISIBILIDAD_SOLO_ADMIN.sql y actualizaste manage-users en la entrega anterior, no los repitas. manage-users no cambia en esta ampliación. Si no lo hiciste, completa esos pasos anteriores antes de probar permisos.
@@ -58,3 +58,13 @@ Para el tornillo que faltaba: abre el producto correcto (el encabezado indica cu
 - Si solo asignas foto a un modelo y el producto aún no tiene principal, se usa esa primera foto como portada al guardar.
 - Cargar 4 ejemplos ficticios añade cuatro borradores de guía en la categoría seleccionada. Incluye nombres, medidas ficticias, colores e ilustraciones. Se puede repetir en cada categoría. No duplica ejemplos iguales ni altera los artículos existentes. Sustituye los datos antes de publicarlos. El administrador y los editores con permiso de contenido tienen las mismas opciones; subir archivos sigue requiriendo su permiso correspondiente.
 - Esta corrección se sube a GitHub; no requiere SQL nuevo ni reemplazar manage-users en Supabase. Conserva los pasos anteriores solo para quien no los haya completado.
+
+## Guardado accesible y grupos (actualización 118)
+1. En Productos y categorías elige la categoría y después el grupo, por ejemplo Accesorios → Tornillos y fijaciones. Las tarjetas quedan agrupadas por tipo; no se modifica su orden comercial.
+2. Abre un producto o pulsa Añadir producto. El nuevo producto hereda el grupo seleccionado. Arriba encontrarás Guardar en el borrador y Guardar y publicar en una barra fija, y los mismos controles justo después de título y descripción.
+3. La zona Publicado en [grupo] reúne sus artículos y modelos publicados con medidas y colores. Ver todos los productos de esta categoría vuelve a la lista completa. Los ejemplos aparecen después y se identifican como borradores ficticios.
+4. Cargar 4 ejemplos ficticios utiliza el grupo: en tornillos crea cuatro tornillos diferentes; en perfiles, cuatro perfiles; en canaletas, cuatro canales. Incluye ilustraciones diferentes, descripciones y medidas ficticias. Si tienes campos sin guardar, guarda el borrador primero. No se publican automáticamente ni se mezclan con el inventario real.
+5. Al guardar aparece Procesando, Subiendo imágenes o Guardando y publicando en Supabase junto al botón. Los botones se desactivan mientras se procesa. El resultado muestra Publicado correctamente y su versión, o el error en ese mismo lugar. Ante conflicto, conserva el borrador y pide revisar la versión nueva; no sobrescribe otros cambios automáticamente.
+6. Se valida el nombre antes de subir archivos. Un fallo de conexión o permisos no se presenta como éxito; los campos siguen disponibles para corregir o reintentar. La confirmación del servidor se conserva aunque falle la actualización de la previsualización del panel.
+
+Esta entrega requiere subir el contenido de la ZIP a GitHub, esperar Actions en verde y recargar el panel con Ctrl+F5. No hay SQL nuevo ni cambios nuevos en manage-users. Las pruebas cubren administrador/editor, foto local antes de subir, publicación con confirmación, error de validación, conflicto de revisión, botones durante la petición y ejemplos por grupo. La publicación con tus credenciales reales se comprueba después del despliegue; no se han usado contraseñas de tu cuenta para estas pruebas.
