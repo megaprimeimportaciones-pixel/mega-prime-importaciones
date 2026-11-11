@@ -1,10 +1,10 @@
 # Actualización unificada: catálogo editable y todas las mejoras anteriores
 
-Este ZIP contiene 77 archivos para actualizar el repositorio existente. Incluye el editor de productos, modelos, categorías, colores y fotos, junto con las correcciones anteriores de usuarios, sesiones, visibilidad, videos y estados. No contiene Word ni contraseñas.
+Este ZIP contiene 81 archivos para actualizar el repositorio existente. Incluye el editor de productos, modelos, categorías, colores y fotos, junto con las correcciones anteriores de usuarios, sesiones, visibilidad, videos y estados. No contiene Word ni contraseñas.
 
 ## Aplicar esta ampliación
 1. Extrae ACTUALIZACION_UNIFICADA_MEGA_PRIME.zip y sube su contenido a la raíz de GitHub conservando las carpetas. No borres otros archivos del repositorio.
-2. Título: Acercar guardado y agrupar productos con vistas previas.
+2. Título: Unificar categorías y mostrar productos dentro de sus grupos.
 3. Espera Actions verde.
 4. Esta ampliación de grupos y fotos por modelo no requiere cambios nuevos en Supabase. Solo si todavía no aplicaste ACTUALIZAR_CATALOGO_EDITABLE.sql de la entrega anterior, ejecútalo en SQL Editor. Permite a los editores con permiso de contenido añadir categorías; no les concede activar, ocultar, renombrar o retirar categorías existentes. No borra datos.
 5. Si ya instalaste ACTUALIZAR_VISIBILIDAD_SOLO_ADMIN.sql y actualizaste manage-users en la entrega anterior, no los repitas. manage-users no cambia en esta ampliación. Si no lo hiciste, completa esos pasos anteriores antes de probar permisos.
@@ -68,3 +68,15 @@ Para el tornillo que faltaba: abre el producto correcto (el encabezado indica cu
 6. Se valida el nombre antes de subir archivos. Un fallo de conexión o permisos no se presenta como éxito; los campos siguen disponibles para corregir o reintentar. La confirmación del servidor se conserva aunque falle la actualización de la previsualización del panel.
 
 Esta entrega requiere subir el contenido de la ZIP a GitHub, esperar Actions en verde y recargar el panel con Ctrl+F5. No hay SQL nuevo ni cambios nuevos en manage-users. Las pruebas cubren administrador/editor, foto local antes de subir, publicación con confirmación, error de validación, conflicto de revisión, botones durante la petición y ejemplos por grupo. La publicación con tus credenciales reales se comprueba después del despliegue; no se han usado contraseñas de tu cuenta para estas pruebas.
+
+## Jerarquía única en todas las categorías (actualización 119)
+- La página principal y el catálogo digital muestran una sola tarjeta por grupo. Se retira de la vista la fila duplicada que mostraba todos los artículos junto a los grupos. Los nombres de los tornillos ya no se listan en la portada de Accesorios.
+- Se aplica igual a Cubiertas, Acabados, Herramientas, Maquinarias, Accesorios, Materiales, Vehículos y Servicios, y a nuevos grupos de cualquiera de ellas.
+- Esquema: categoría general → grupo/categoría interna → productos/subcategorías → modelos, medidas y fotos. Ejemplo: Accesorios → Tornillos y fijaciones → Tornillo hexagonal para madera → medidas y colores. Se conservan los productos existentes y sus identificadores; no se eliminan ni se mueven automáticamente.
+- Al abrir un grupo se ven sus artículos, con búsqueda interna y páginas de 12. Se comprobó la navegación de 60 artículos por grupo. El límite general actual continúa siendo 500 productos y 60 presentaciones por producto; los artículos de un grupo pueden repartirse entre varios productos.
+- En el panel elige Grupos / categorías internas para cambiar nombre, foto y descripción, añadir un grupo o abrir sus productos. Añadir producto/subcategoría en este grupo lo coloca dentro, sin crear una tarjeta exterior por cada artículo. Los productos nuevos también heredan el grupo elegido en el filtro.
+- Eliminar producto de este grupo modifica el borrador. Eliminar grupo y sus productos del borrador pide confirmar expresamente cuántos productos se retirarán. Guarda y publica para aplicar la eliminación al público. Las categorías generales y las funciones reservadas al administrador conservan sus restricciones anteriores.
+- Los ejemplos de tornillos, perfiles, canaletas y cumbreras/remates son distintos según el grupo, con ilustraciones propias. Permanecen en borrador hasta que decidas publicar. No se sustituyen las fotos reales de tus artículos por dibujos.
+- El orden A–Z/Z–A de la página principal se aplica a los grupos y a los artículos del grupo abierto. Se mantienen las fotos, medidas, colores, vista previa inmediata y controles de guardar de la actualización anterior.
+
+Aplicación: sube los 81 archivos del paquete conservando sus carpetas, espera Actions en verde y usa Ctrl+F5. Esta ampliación no necesita SQL nuevo ni otra publicación de manage-users en Supabase. Las pruebas locales incluyen las ocho categorías, galería sin duplicados visibles, 60 artículos con búsqueda/paginación, ficha correcta y edición/renombrado/eliminación de grupos por propietario y editor autorizado.
