@@ -22,3 +22,18 @@
 .corp-footer .social-zone.mpi-social-location-only{display:flex;justify-content:center}
 .corp-footer .social-zone.mpi-social-location-only>.social-map{width:min(100%,530px);height:auto;margin:0 auto}
 @media(max-width:460px){.corp-footer .social-map-head{flex-wrap:wrap}}
+
+/* Mega Prime Importaciones · Ubicación adaptable: mapa y datos del local. */
+.corp-footer .social-zone.mpi-social-location-only{display:flex;justify-content:stretch;width:100%}
+.corp-footer .social-zone.mpi-social-location-only>.social-map{display:grid;grid-template-columns:minmax(0,1.04fr) minmax(260px,.96fr);grid-template-rows:auto auto auto;align-items:start;column-gap:18px;row-gap:10px;width:100%;max-width:none;height:auto;margin:0;position:relative;min-width:0;box-sizing:border-box}
+.corp-footer .social-map-head{display:contents!important}
+.corp-footer .social-map-head>div{display:contents!important}
+.corp-footer .social-map-head h2,.corp-footer .social-map-head h3{position:absolute;z-index:4;top:12px;left:12px;margin:0!important;padding:7px 11px;border-radius:8px;color:#fff!important;background:rgba(7,12,16,.82);text-shadow:0 1px 3px #000;pointer-events:none}
+.corp-footer .social-map iframe{grid-column:1;grid-row:1/span 3;display:block;width:calc(100% + 3px)!important;max-width:none!important;height:231px!important;min-height:231px!important;border:0;border-radius:12px;box-sizing:border-box}
+.corp-footer .social-map-address{grid-column:2;grid-row:1;align-self:start;margin:0!important;line-height:1.5;overflow-wrap:anywhere}
+.corp-footer .social-map-details{grid-column:2;grid-row:2;display:grid;align-self:start;gap:9px;margin:0!important;font-size:12px;line-height:1.5;min-width:0}
+.corp-footer .social-map-open{grid-column:2;grid-row:3;justify-self:start;align-self:start;white-space:normal}
+.corp-footer .social-map-details dd{margin:2px 0 0;white-space:pre-line;overflow-wrap:anywhere}
+@media(min-width:601px) and (max-width:900px){.corp-footer .social-zone.mpi-social-location-only>.social-map{grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:14px}}
+@media(max-width:600px){.corp-footer .social-zone.mpi-social-location-only>.social-map{display:flex!important;flex-direction:column;align-items:stretch;gap:11px;width:100%}.corp-footer .social-map-head{display:flex!important;flex-direction:column;align-items:flex-start;gap:6px}.corp-footer .social-map-head>div{display:block!important;width:100%}.corp-footer .social-map-head h2,.corp-footer .social-map-head h3{position:static;margin:0!important;padding:0;color:inherit!important;background:transparent;text-shadow:none}.corp-footer .social-map iframe{order:1;width:calc(100% + 3px)!important;max-width:none!important;height:231px!important;min-height:231px!important}.corp-footer .social-map-address{order:2}.corp-footer .social-map-details{order:3;width:100%}.corp-footer .social-map-open{order:4;align-self:flex-start}}
+@media(max-width:360px){.corp-footer .social-map iframe{height:211px!important;min-height:211px!important}}
