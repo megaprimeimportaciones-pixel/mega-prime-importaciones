@@ -38,132 +38,117 @@
  window.addEventListener('message',e=>{if(e.origin===location.origin&&frame&&e.source===frame.contentWindow&&e.data?.type==='mp:close-calculator'){content();frame.remove();frame=null}});
 })();
 
-/* La calculadora se almacena en un bucket privado y nunca se despliega en Pages. */
 (()=>{
- const workspace=document.getElementById('workspace');
- if(!workspace)return;
- const label='calculadora preliquidación';
- const tab=document.createElement('section');
- tab.className='tab';
- tab.id='privatePreliquidationTab';
- tab.hidden=true;
- const heading=document.createElement('h1');
- heading.textContent=label;
- const status=document.createElement('p');
- status.setAttribute('role','status');
- const retry=button('Volver a intentar',open);
- retry.hidden=true;
- tab.append(heading,status,retry);
- workspace.append(tab);
-
- let frame,documentUrl,allowedAccount,checkingAccount,loading=false,generation=0;
- const ownerCandidate=()=>window.MP_can?.('manage_visibility')?MP.session?.user?.id:null;
- const isOwner=()=>!!allowedAccount&&allowedAccount===ownerCandidate();
- const control=button(label,open);
+ const nav=document.querySelector('#workspace nav');
+ if(!nav)return;
+ const tabs=new Set();
+ let authorizedAccount=null,pendingAccount=null;
+ const candidate=()=>window.MP_can?.('manage_visibility')?MP.session?.user?.id:null;
+ const isAdmin=()=>!!authorizedAccount&&authorizedAccount===candidate();
+ const control=button('calculadora preliquidación',()=>{
+  if(!isAdmin())return;
+  const tab=window.open('preliquidacion.html?desde=panel','_blank');
+  if(!tab){say('Permite las ventanas emergentes para abrir la calculadora.');return}
+  for(const previous of tabs)if(previous.closed)tabs.delete(previous);
+  tabs.add(tab);
+ });
  control.hidden=true;
- workspace.querySelector('nav').append(control);
- function clear(){
-  generation++;
-  frame?.remove();
-  if(documentUrl)URL.revokeObjectURL(documentUrl);
-  documentUrl=null;
-  frame=null;
-  loading=false;
-  tab.hidden=true;
-  retry.hidden=true;
-  status.textContent='';
+ nav.append(control);
+
+ const settings=document.createElement('section');
+ settings.id='preliquidationAccessTab';
+ settings.className='tab';
+ settings.hidden=true;
+ settings.innerHTML=`
+  <h1>Acceso a la calculadora</h1>
+  <p><a href="preliquidacion.html" target="_blank" rel="noopener">Abrir el ingreso directo ↗</a></p>
+  <p data-access-status role="status"></p>
+  <form hidden style="max-width:30rem">
+   <label>Correo de la calculadora<input name="email" type="email" maxlength="190" autocomplete="off" required></label>
+   <label>Nueva contraseña<input name="password" type="password" minlength="16" maxlength="128" autocomplete="new-password" required></label>
+   <label>Confirmar contraseña<input name="confirmation" type="password" minlength="16" maxlength="128" autocomplete="new-password" required></label>
+   <button type="submit">Crear acceso</button>
+  </form>`;
+ document.getElementById('workspace').append(settings);
+ const form=settings.querySelector('form');
+ const note=settings.querySelector('[data-access-status]');
+ const email=form.elements.namedItem('email');
+ const password=form.elements.namedItem('password');
+ const confirmation=form.elements.namedItem('confirmation');
+ const save=form.querySelector('button');
+ const endpoint='/functions/v1/preliquidacion-access';
+ let accountEmail=null;
+ const settingsButton=button('Crear contraseña calculadora',async()=>{
+  if(!isAdmin())return;
+  document.querySelectorAll('#workspace .tab').forEach(section=>section.hidden=section!==settings);
+  form.hidden=true;
+  note.textContent='Cargando acceso…';
+  try{
+   const data=await manage({action:'status'});
+   if(isAdmin())showAccount(data.email);
+  }catch(error){note.textContent=error.message}
+ });
+ settingsButton.hidden=true;
+ nav.append(settingsButton);
+ function manage(body){return MP.request(endpoint,{method:'POST',body})}
+ function showAccount(address,message=''){
+  accountEmail=address||null;
+  email.readOnly=!!accountEmail;
+  email.value=accountEmail||'';
+  save.textContent=accountEmail?'Cambiar contraseña':'Crear acceso';
+  note.textContent=message;
+  form.hidden=false;
+ }
+ form.onsubmit=async event=>{
+  event.preventDefault();
+  if(!isAdmin())return;
+  if(password.value!==confirmation.value){note.textContent='Las contraseñas deben coincidir.';return}
+  const body={action:accountEmail?'password':'create',email:email.value.trim(),password:password.value,confirmation:confirmation.value};
+  password.value=confirmation.value='';
+  save.disabled=true;
+  try{
+   const data=await manage(body);
+   if(isAdmin())showAccount(data.email,accountEmail?'Contraseña actualizada.':'Acceso de la calculadora creado.');
+  }catch(error){note.textContent=error.message}
+  finally{save.disabled=false}
+ };
+
+ function stop(){
+  authorizedAccount=pendingAccount=null;
+  control.hidden=settingsButton.hidden=true;
+  if(!settings.hidden){
+   settings.hidden=true;
+   document.getElementById('contentTab').hidden=false;
+  }
+  form.reset();
+  form.hidden=true;
+  for(const tab of tabs)if(!tab.closed)tab.postMessage({type:'mp:preliq-panel-ended'},location.origin);
+  tabs.clear();
  }
  async function sync(){
-  const account=ownerCandidate();
-  if(!account){
-   allowedAccount=checkingAccount=null;
-   control.hidden=true;
-   clear();
-   return;
-  }
-  if(checkingAccount===account)return;
-  if(!isOwner()){
-   allowedAccount=null;
-   control.hidden=true;
-   clear();
-  }
-  checkingAccount=account;
+  const account=candidate();
+  if(!account){stop();return}
+  if(pendingAccount===account)return;
+  if(authorizedAccount&&authorizedAccount!==account)stop();
+  pendingAccount=account;
   try{
    const allowed=await MP.request('/rest/v1/rpc/preliquidation_owner_access',{method:'POST',body:{}});
-   if(account!==ownerCandidate()||checkingAccount!==account)return;
-   allowedAccount=allowed===true?account:null;
-   control.hidden=!allowedAccount;
-   if(!allowedAccount)clear();
-  }catch{}finally{if(checkingAccount===account)checkingAccount=null}
+   if(account!==candidate()||pendingAccount!==account)return;
+   if(allowed!==true){stop();return}
+   authorizedAccount=account;
+   control.hidden=settingsButton.hidden=false;
+  }catch{}finally{if(pendingAccount===account)pendingAccount=null}
  }
- async function open(){
-  if(!isOwner())return;
-  workspace.querySelectorAll('.tab').forEach(section=>section.hidden=section!==tab);
-  if(frame||loading)return;
-  loading=true;
-  const request=++generation,account=MP.session.user.id;
-  const active=()=>request===generation&&isOwner()&&account===MP.session.user.id;
-  retry.hidden=true;
-  status.textContent='Cargando calculadora privada…';
-  try{
-   const html=await MP.request('/storage/v1/object/authenticated/preliquidacion-privada/calculadora-preliquidacion.html');
-   if(!active())return;
-   if(typeof html!=='string'||!/^<!doctype html>/i.test(html.trimStart())||!/<head\b[^>]*>/i.test(html))throw Error('El archivo privado no es una página HTML válida.');
-   const user=MP.session.user;
-   const host=JSON.stringify({
-    parentOrigin:location.origin,url:MP_CONFIG.url,publishableKey:MP_CONFIG.anonKey,user:{id:user.id,email:user.email}
-   }).replace(/</g,'\\u003c');
-   const bootstrap=`<script>
-const host=${host};
-window.MP_PRELIQ_HOST={
- url:host.url,publishableKey:host.publishableKey,user:host.user,
- getAccessToken(){
-  return new Promise(resolve=>{
-   const channel=new MessageChannel();
-   const finish=token=>{clearTimeout(timeout);channel.port1.close();resolve(token)};
-   const timeout=setTimeout(()=>finish(null),5000);
-   channel.port1.onmessage=event=>finish(event.data);
-   parent.postMessage({type:'mp:preliquidation-token'},host.parentOrigin,[channel.port2]);
-  });
- },
- signOut(){parent.postMessage({type:'mp:preliquidation-logout'},host.parentOrigin)}
-};
-document.addEventListener('click',event=>{
- const link=event.target.closest?.('a[href^="#"]');
- if(event.defaultPrevented||event.ctrlKey||event.metaKey||event.shiftKey||event.altKey||!link)return;
- const target=document.getElementById(link.getAttribute('href').slice(1));
- if(!target)return;
- event.preventDefault();
- target.scrollIntoView();
-});
-</script>`;
-   const privateHtml=html.replace(/<head\b[^>]*>/i,head=>head+bootstrap);
-   frame=document.createElement('iframe');
-   frame.title=label;
-   frame.setAttribute('sandbox','allow-scripts allow-downloads allow-modals allow-popups allow-popups-to-escape-sandbox');
-   frame.referrerPolicy='no-referrer';
-   frame.style.cssText='width:100%;height:85vh;border:0';
-   documentUrl=URL.createObjectURL(new Blob([privateHtml],{type:'text/html'}));
-   frame.src=documentUrl;
-   tab.append(frame);
-   status.textContent='';
-  }catch(error){
-   if(!active())return;
-   status.textContent='No se pudo abrir la calculadora privada. '+error.message;
-   retry.hidden=false;
-  }finally{if(request===generation)loading=false}
- }
+ window.addEventListener('message',event=>{
+  if(event.origin!==location.origin||!tabs.has(event.source)||event.data?.type!=='mp:preliq-panel-session'||!event.ports[0])return;
+  const session=isAdmin()?MP.session:null;
+  event.ports[0].postMessage(session?{
+   access_token:session.access_token,user:{id:session.user.id,email:session.user.email}
+  }:null);
+ });
  window.addEventListener('mp:permissions',sync);
  window.addEventListener('mp:draft-changed',sync);
- window.addEventListener('mp:session-locked',()=>{
-  allowedAccount=checkingAccount=null;
-  control.hidden=true;
-  clear();
- });
- window.addEventListener('message',event=>{
-  if(!frame||event.source!==frame.contentWindow||event.origin!=='null'||!isOwner())return;
-  if(event.data?.type==='mp:preliquidation-token'&&event.ports[0])event.ports[0].postMessage(MP.session.access_token);
-  if(event.data?.type==='mp:preliquidation-logout')void MP.logout();
- });
+ window.addEventListener('mp:session-locked',stop);
  sync();
 })();
+

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="es" data-mp-session="preliquidacion">
+<head>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width,initial-scale=1">
+ <meta name="robots" content="noindex,nofollow">
+ <title>Calculadora preliquidación · Mega Prime Importaciones</title>
+ <link rel="stylesheet" href="panel.css">
+ <style>
+  body{min-height:100dvh;background:radial-gradient(ellipse at 50% 0,#18232b 0,#080d11 55%)}
+  .access{width:min(100%,450px);margin:9vh auto 20px}
+  .access h1{margin:6px 0 18px;font-size:clamp(1.65rem,5vw,2.15rem);line-height:1.15}
+  .brand-name{letter-spacing:.04em;font-weight:700}
+  .link-button{color:var(--gold);background:transparent;padding-inline:0}
+  .notice{margin:0 auto;width:min(100%,450px);color:#f4dba3}
+  body:has(#calculator iframe) main{max-width:none;padding:0}
+  #calculator iframe{display:block;width:100%;height:100dvh;border:0}
+ </style>
+ <script src="config.js" defer></script>
+ <script src="client.js?v=107" defer></script>
+ <script src="preliquidacion.js?v=1" defer></script>
+</head>
+<body>
+ <main>
+  <section id="access" class="access" hidden>
+   <div class="brand-name">Mega Prime <b>Importaciones</b></div>
+   <h1>Calculadora preliquidación</h1>
+   <form id="login">
+    <label>Correo electrónico<input id="email" type="email" autocomplete="username" required></label>
+    <label>Contraseña<input id="password" type="password" autocomplete="current-password" required></label>
+    <button type="submit">Ingresar</button>
+    <button type="button" class="link-button" id="forgot">Olvidé mi contraseña</button>
+   </form>
+   <form id="recovery" hidden>
+    <label>Correo de la calculadora<input id="recoveryEmail" type="email" autocomplete="email" required></label>
+    <button type="submit">Enviar enlace de recuperación</button>
+    <button type="button" class="link-button" data-login>Volver al ingreso</button>
+   </form>
+   <form id="reset" hidden>
+    <label>Nueva contraseña<input id="newPassword" type="password" autocomplete="new-password" minlength="16" required></label>
+    <label>Confirmar contraseña<input id="confirmPassword" type="password" autocomplete="new-password" minlength="16" required></label>
+    <button type="submit">Guardar nueva contraseña</button>
+   </form>
+  </section>
+  <p id="status" class="notice" role="status" aria-live="polite">Abriendo calculadora…</p>
+  <button id="retry" type="button" hidden>Volver a intentar</button>
+  <div id="calculator"></div>
+ </main>
+</body>
+</html>

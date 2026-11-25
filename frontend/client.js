@@ -1,6 +1,7 @@
 /* Cliente REST: credenciales de sesión en sessionStorage, nunca en el repositorio. */
 window.MP = (()=>{
- const cfg=window.MP_CONFIG, key='mp_session_v1';
+ const cfg=window.MP_CONFIG;
+ const key=document.documentElement.dataset.mpSession==='preliquidacion'?'mp_preliq_session_v1':'mp_session_v1';
  let closing=false;let session=null;try{session=JSON.parse(sessionStorage.getItem(key)||'null')}catch{try{sessionStorage.removeItem(key)}catch{}}
  async function request(path,{method='GET',body,auth=true,headers={}}={}){
   if(!cfg.url||!cfg.anonKey)throw Error('Configura frontend/config.js con URL y clave pública de Supabase.');
