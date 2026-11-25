@@ -16,20 +16,46 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      contents: read
+      pages: read
     steps:
       - uses: actions/checkout@v7.0.1
       - uses: actions/configure-pages@v6.0.0
       - uses: actions/upload-pages-artifact@v5.0.0
         with:
           path: frontend
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Esperar el paquete de Pages
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          for attempt in {1..12}; do
+            if gh api "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/artifacts?name=github-pages" \
+                --jq '.artifacts[] | select(.name == "github-pages" and .expired == false) | .id' \
+                | grep -q .; then
+              exit 0
+            fi
+            if [[ "$attempt" -lt 12 ]]; then
+              sleep 5
+            fi
+          done
+          echo "::error::GitHub no encontró el paquete github-pages de esta ejecución."
+          exit 1
       - name: Publicar
         id: deployment
         uses: actions/deploy-pages@v5.0.1
