@@ -62,13 +62,14 @@
  settings.innerHTML=`
   <h1>Acceso a la calculadora</h1>
   <p><a href="preliquidacion.html" target="_blank" rel="noopener">Abrir el ingreso directo ↗</a></p>
-  <p data-access-status role="status"></p>
   <form hidden style="max-width:30rem">
-   <label>Correo de la calculadora<input name="email" type="email" maxlength="190" autocomplete="off" required></label>
-   <label>Nueva contraseña<input name="password" type="password" minlength="16" maxlength="128" autocomplete="new-password" required></label>
+   <label>Correo de ingreso<input name="email" type="email" maxlength="190" autocomplete="username" required></label>
+   <label>Contraseña de la calculadora<input name="password" type="password" minlength="16" maxlength="128" autocomplete="new-password" required></label>
    <label>Confirmar contraseña<input name="confirmation" type="password" minlength="16" maxlength="128" autocomplete="new-password" required></label>
-   <button type="submit">Crear acceso</button>
-  </form>`;
+   <small>Usa al menos 16 caracteres. La recuperación llegará al correo de ingreso.</small><br>
+   <button type="submit">Guardar acceso</button>
+  </form>
+  <p data-access-status role="status" aria-live="polite"></p>`;
  document.getElementById('workspace').append(settings);
  const form=settings.querySelector('form');
  const note=settings.querySelector('[data-access-status]');
@@ -81,6 +82,7 @@
  const settingsButton=button('Crear contraseña calculadora',async()=>{
   if(!isAdmin())return;
   document.querySelectorAll('#workspace .tab').forEach(section=>section.hidden=section!==settings);
+  password.value=confirmation.value='';
   form.hidden=true;
   note.textContent='Cargando acceso…';
   try{
@@ -90,26 +92,46 @@
  });
  settingsButton.hidden=true;
  nav.append(settingsButton);
+ nav.addEventListener('click',event=>{
+  const clicked=event.target.closest('button');
+  if(clicked&&clicked!==settingsButton)password.value=confirmation.value='';
+ });
  function manage(body){return MP.request(endpoint,{method:'POST',body})}
  function showAccount(address,message=''){
   accountEmail=address||null;
   email.readOnly=!!accountEmail;
-  email.value=accountEmail||'';
-  save.textContent=accountEmail?'Cambiar contraseña':'Crear acceso';
-  note.textContent=message;
+  email.value=MP.preliquidationDisplayEmail(accountEmail||MP.session?.user?.email||'');
+  save.textContent=accountEmail?'Guardar nueva contraseña':'Guardar acceso';
+  note.textContent=message||(accountEmail?'Acceso activo. Usa el correo mostrado para ingresar.':'');
   form.hidden=false;
  }
  form.onsubmit=async event=>{
   event.preventDefault();
-  if(!isAdmin())return;
+  if(!isAdmin()||save.disabled)return;
   if(password.value!==confirmation.value){note.textContent='Las contraseñas deben coincidir.';return}
-  const body={action:accountEmail?'password':'create',email:email.value.trim(),password:password.value,confirmation:confirmation.value};
-  password.value=confirmation.value='';
+  const address=accountEmail||MP.preliquidationAuthEmail(email.value);
+  const action=accountEmail?'password':'create';
+  const body={action,email:address,password:password.value,confirmation:confirmation.value};
   save.disabled=true;
+  note.textContent=action==='create'?'Guardando acceso…':'Guardando contraseña…';
   try{
    const data=await manage(body);
-   if(isAdmin())showAccount(data.email,accountEmail?'Contraseña actualizada.':'Acceso de la calculadora creado.');
-  }catch(error){note.textContent=error.message}
+   if(data?.ok!==true||data.email!==address)throw Error('No se pudo confirmar que se guardó.');
+   if(isAdmin()){
+    password.value=confirmation.value='';
+    showAccount(data.email,action==='create'?'Acceso guardado. Ya puedes ingresar desde cualquier navegador.':'Contraseña guardada. Ya puedes ingresar con la nueva clave.');
+   }
+  }catch(error){
+   if(!isAdmin())return;
+   if(action==='create'){
+    const saved=await manage({action:'status'}).catch(()=>null);
+    if(isAdmin()&&saved?.email===address){
+     showAccount(saved.email,'El acceso ya existe. Pulsa Guardar nueva contraseña para confirmar la clave.');
+     return;
+    }
+   }
+   if(isAdmin())note.textContent=error.message||'No se pudo guardar el acceso.';
+  }
   finally{save.disabled=false}
  };
 

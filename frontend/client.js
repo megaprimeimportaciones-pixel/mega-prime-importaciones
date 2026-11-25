@@ -2,6 +2,8 @@
 window.MP = (()=>{
  const cfg=window.MP_CONFIG;
  const key=document.documentElement.dataset.mpSession==='preliquidacion'?'mp_preliq_session_v1':'mp_session_v1';
+ const storeEmail='megaprimeimportaciones@gmail.com';
+ const calculatorEmail='megaprimeimportaciones+calculadora@gmail.com';
  let closing=false;let session=null;try{session=JSON.parse(sessionStorage.getItem(key)||'null')}catch{try{sessionStorage.removeItem(key)}catch{}}
  async function request(path,{method='GET',body,auth=true,headers={}}={}){
   if(!cfg.url||!cfg.anonKey)throw Error('Configura frontend/config.js con URL y clave pública de Supabase.');
@@ -17,6 +19,9 @@ window.MP = (()=>{
  function store(s){if(closing&&s)return;session=s; s?sessionStorage.setItem(key,JSON.stringify(s)):sessionStorage.removeItem(key)}
  function endSession(){const previous=session;closing=true;store(null);if(!previous)return Promise.resolve();return fetch(cfg.url+'/auth/v1/logout?scope=local',{method:'POST',keepalive:true,headers:{apikey:cfg.anonKey,Authorization:'Bearer '+previous.access_token}}).then(()=>undefined).catch(()=>undefined)}
  return {request,endSession,acceptRecovery(s){closing=false;store(s)},get session(){return session},store,
+  // La calculadora conserva una cuenta de Auth propia con entrega al mismo buzón.
+  preliquidationAuthEmail(value){const email=value.trim().toLowerCase();return email===storeEmail?calculatorEmail:email},
+  preliquidationDisplayEmail(email){return email===calculatorEmail?storeEmail:email},
   async login(email,password){closing=false;const s=await request('/auth/v1/token?grant_type=password',{method:'POST',body:{email:email.trim().toLowerCase(),password},auth:false});store(s);return s},
   async refresh(){if(!session||closing)return;const previous=session;const s=await request('/auth/v1/token?grant_type=refresh_token',{method:'POST',body:{refresh_token:previous.refresh_token},auth:false});if(session===previous&&!closing)store(s)},
   async logout(){const pending=endSession();location.reload();await pending},

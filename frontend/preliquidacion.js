@@ -143,14 +143,18 @@ document.addEventListener('click',e=>{
   };
  }
  submit('login',async()=>{
-  const password=$('password').value;
+  try{
+   await MP.login(MP.preliquidationAuthEmail($('email').value),$('password').value);
+  }catch(error){
+   if(error.message==='Usuario o contraseña incorrectos')throw Error('Verifica el correo y la contraseña de la calculadora guardados en el panel.');
+   throw error;
+  }
   $('password').value='';
-  await MP.login($('email').value,password);
   await activate();
  });
  submit('recovery',async()=>{
   await MP.request('/functions/v1/preliquidacion-access',{
-   method:'POST',auth:false,body:{action:'recover',email:$('recoveryEmail').value.trim().toLowerCase()}
+   method:'POST',auth:false,body:{action:'recover',email:MP.preliquidationAuthEmail($('recoveryEmail').value)}
   });
   say('Si el correo corresponde a la cuenta de la calculadora, recibirás un enlace de recuperación.');
  });
